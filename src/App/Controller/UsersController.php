@@ -49,7 +49,7 @@ class UsersController
             $this->usersRepository->createUsers($user);
 
             // Redirection vers la page de login après l'inscription réussie
-            header('Location: /jerome2/views/users/login.php');
+            header('Location: /newsite/views/users/login.php');
             exit;
         }
         else{
@@ -68,7 +68,7 @@ class UsersController
 
             if (empty($email) || empty($password)) {
                 $_SESSION['error_message'] = 'Tous les champs sont obligatoires.';
-                header('Location: /jerome2/views/users/login.php');
+                header('Location: /newsite/views/users/login.php');
                 exit;
             }
 
@@ -82,7 +82,7 @@ class UsersController
                 exit;
             } else {
                 $_SESSION['error'] = 'Identifiants invalides.';
-                header('Location: /jerome2/views/users/login.php');
+                header('Location: /newsite/views/users/login.php');
                 exit;
             }
         } else {

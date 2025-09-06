@@ -1,4 +1,4 @@
 <?php
-header('Location: /jerome2/public/index.php');
+header('Location: /newsite/public/index.php');
 exit;
 ?>

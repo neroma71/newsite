@@ -45,7 +45,7 @@ class HomeController
             ]);
             $this->homeRepository->createHome($home);
             // Redirection après traitement
-            header('Location: /jerome2/public/index.php');
+            header('Location: /newsite/public/index.php');
             exit;
         }
     }
@@ -118,7 +118,7 @@ class HomeController
             // Sauvegarde en BDD
         $this->homeRepository->updateHome($home);
         // Redirection
-        header('Location: /jerome2/views/manage/manager.php');
+        header('Location: /newsite/views/manage/manager.php');
         exit;
         }
     }
