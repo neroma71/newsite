@@ -136,5 +136,20 @@ class HomeController
 
     return $home;
 }
+public function delete(int $id, string $csrfToken)
+    {
+        if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+            throw new \Exception('Token CSRF invalide');
+        }
+
+        $home = $this->homeRepository->findById($id);
+        if (!$home) {
+            throw new \Exception("Accueil non trouvé");
+        }
+
+        $this->homeRepository->deleteHome($id);
+        header('Location: manager.php');
+        exit;
+    }
 
 }

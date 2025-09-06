@@ -9,19 +9,12 @@ use App\Controller\HomeController;
 $homeRepository = new HomeRepository($bdd);
 $controller = new HomeController($homeRepository);
 
-// Générer un token CSRF si absent
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-// Suppression si POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die('CSRF token invalide');
+    try {
+        $controller->delete((int)$_POST['delete_id'], $_POST['csrf_token'] ?? '');
+    } catch (\Exception $e) {
+        echo "<div class='alert alert-danger'>Erreur : " . htmlspecialchars($e->getMessage()) . "</div>";
     }
-    $homeRepository->deleteHome((int)$_POST['delete_id']);
-    header('Location: manager.php');
-    exit;
 }
 
 $homes = $homeRepository->findAll();

@@ -9,9 +9,12 @@ use App\Controller\CategoryController;
 $categoryRepository = new CategoryRepository($bdd);
 $controller = new CategoryController($categoryRepository);
 
-// Suppression via contrôleur
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    $controller->delete((int)$_POST['delete_id'], $_POST['csrf_token'] ?? '');
+    try {
+        $controller->delete((int)$_POST['delete_id'], $_POST['csrf_token'] ?? '');
+    } catch (\Exception $e) {
+        echo "<div class='alert alert-danger'>Erreur : " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
 }
 
 $categories = $categoryRepository->findAll();
