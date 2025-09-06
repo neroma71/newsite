@@ -153,7 +153,7 @@
             {
                 $sql = "SELECT a.*, c.title AS category_title
                 FROM articles a
-                JOIN category c ON a.category_id = c.id";
+                JOIN category c ON a.category_id = c.id ORDER BY a.id DESC";
 
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute();

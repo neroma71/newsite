@@ -20,6 +20,12 @@ class ArticleController
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        // Vérification CSRF
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Erreur CSRF : token invalide');
+        }
+
             $title = $_POST['title'] ?? '';
             $content = $_POST['content'] ?? '';
             $images = $_FILES['images'] ?? null;

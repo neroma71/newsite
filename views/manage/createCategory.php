@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <body>
     <h2>Créer une catégorie</h2>
     <form method="post" enctype="multipart/form-data" action="">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <div>
             <label for="title">Titre :</label>
             <input type="text" name="title" id="title" required>

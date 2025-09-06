@@ -15,6 +15,12 @@ class CategoryController
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            // Vérification CSRF
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Erreur CSRF : token invalide');
+        }
+
             $title = $_POST['title'] ?? '';
             $description = $_POST['description'] ?? '';
             $image = $_FILES['image'] ?? null;
@@ -52,6 +58,12 @@ class CategoryController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            // Vérification CSRF
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Erreur CSRF : token invalide');
+        }
+        
             $title = $_POST['title'] ?? $category->getTitle();
             $description = $_POST['description'] ?? $category->getDescription();
             $image = $_FILES['image'] ?? null;
@@ -75,5 +87,22 @@ class CategoryController
             header('Location: ../../views/manage/category.php');
             exit;
         }
+    }
+
+    public function delete(int $id, string $csrfToken): void
+    {
+        if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+            throw new \Exception('Token CSRF invalide');
+        }
+
+        $category = $this->categoryRepository->findById($id);
+        if (!$category) {
+            throw new \Exception("Catégorie introuvable");
+        }
+
+        $this->categoryRepository->deleteCategory($id);
+
+        header('Location: ../../views/manage/category.php');
+        exit;
     }
 }

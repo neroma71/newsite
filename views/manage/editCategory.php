@@ -31,6 +31,7 @@ $category = $id ? $categoryRepository->findById($id) : null;
     <h2>Créer une catégorie</h2>
     <div class="container">
     <form method="post" enctype="multipart/form-data" action="">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <div class="formdiv">
             <label for="title">Titre :</label>
             <input type="text" name="title" id="title" value='<?= htmlspecialchars($category->getTitle()) ?>'> 

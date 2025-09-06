@@ -33,7 +33,7 @@ class CategoryRepository {
 
     public function findAll(): array
     {
-        $query = $this->getDb()->query('SELECT * FROM category');
+        $query = $this->getDb()->query('SELECT * FROM category ORDER BY id DESC');
         $data = $query->fetchAll(PDO::FETCH_ASSOC);
         $categories = [];
         foreach ($data as $row) {

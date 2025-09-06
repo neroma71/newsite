@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </header>
     <div class="container">
         <form action="" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
             <div class="formdiv">
                 <p><label for="title">Titre de l'article :</label></p>
                 <input type="text" id="title" name="title" required>

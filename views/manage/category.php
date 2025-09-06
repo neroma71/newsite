@@ -8,19 +8,10 @@ use App\Controller\CategoryController;
 
 $categoryRepository = new CategoryRepository($bdd);
 $controller = new CategoryController($categoryRepository);
-// Générer un token CSRF si absent
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
 
-// Suppression si POST
+// Suppression via contrôleur
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die('CSRF token invalide');
-    }
-    $categoryRepository->deleteCategory((int)$_POST['delete_id']);
-    header('Location: category.php');
-    exit;
+    $controller->delete((int)$_POST['delete_id'], $_POST['csrf_token'] ?? '');
 }
 
 $categories = $categoryRepository->findAll();

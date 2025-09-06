@@ -43,6 +43,7 @@ $home = $id ? $homeRepository->findById($id) : null;
                 </div>
             <?php endif; ?>
 <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
     <div>
         <label for="title">Titre :</label>
         <p>

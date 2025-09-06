@@ -17,6 +17,11 @@ class HomeController
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            // Vérification CSRF
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Erreur CSRF : token invalide');
+        }
             $title = $_POST['title'] ?? '';
             $subtitle = $_POST['subtitle'] ?? '';
             $description = $_POST['description'] ?? '';
@@ -58,6 +63,12 @@ class HomeController
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        // Vérification CSRF
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Erreur CSRF : token invalide');
+        }
+        
         $title = $_POST['title'] ?? $home->getTitle();
         $subtitle = $_POST['subtitle'] ?? $home->getSubtitle();
         $description = $_POST['description'] ?? $home->getDescription();
