@@ -1,0 +1,150 @@
+*{
+  box-sizing: border-box;
+}
+body{
+  margin:0;
+  padding:0;
+  width:100vw;
+  height:100vh;
+  overflow-x:hidden;
+}
+.btn a{
+  text-decoration:none;
+  color: white;
+}
+header{
+  position:fixed;
+  height:120px;
+  width:100vw;
+  top:0;
+  left:0;
+  background:white;
+  border-bottom:1px solid lightgray;
+  z-index:100;
+}
+header h2{
+  font-family:Helvetica, sans-serif;
+  color:grey;
+}
+header p{
+  position:fixed;
+  font-size:40px;
+  left:50px;
+}
+nav{
+  position:fixed;
+  height:40px;
+  width:100vw;
+  top:5px;
+}
+nav ul{
+  list-style-type: none;
+  height:40px;
+  width:100vw;
+  padding:0;
+  margin:0;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:right;
+  padding-right:15px;
+}
+nav ul li{
+  width:155px;
+  text-align:center;
+  line-height:40px;
+  margin-left:5px;
+  border:1px solid lightgray;
+  border-radius:5px;
+}
+nav ul li a{
+  display:inline-block;
+  height:40px;
+  width:155px;
+  text-decoration:none;
+}
+.container{
+  margin-top:120px;
+}
+.image-grid{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+}
+.formdiv{
+  margin-top:20px;
+}
+.image-section{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+}
+.image-item{
+ width:300px;
+ height:300px;
+  margin:5px;
+  padding:5px;
+  border:1px solid lightgray;
+}
+img{
+  height:50px;
+  width:50px;
+  object-fit: cover;
+}
+.containerform{
+  margin-top:50px;
+}
+input[type=text]{
+  width:100%;
+}
+.forminput{
+  margin:10px 0;
+}
+#dashboard-title{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+}
+.dashboard{
+  position:relative;
+  width:80%;
+  height:100vh;
+  top:120px;
+  left:10%;
+  padding:10px;
+  font-family:Helvetica, sans-serif;
+}
+.dashboard p{
+  font-size:20px;
+  color:grey;
+  width:100%;
+  text-align:center;
+}
+.actions{
+text-align:center;
+}
+.action-card{
+  display:inline-block;
+  border-radius:5px;
+  width:200px;
+  height:200px;
+  margin:10px;
+}
+.action-card a{
+  display:block;
+  width:200px;
+  height:200px;
+  line-height:150px;
+  text-decoration:none;
+  color:white;
+  text-align:center;
+  border-radius:5px;
+  background:rgb(64, 128, 224)
+}
+.action-card a:hover{
+  background:rgb(44, 52, 63);
+}
+footer{
+  height:100px;
+  width:100vw;
+}
