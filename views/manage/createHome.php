@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <div>
         <label for="content">Description :</label>
-        <textarea name="description" id="content" required></textarea>
+        <textarea name="description" id="content"></textarea>
     </div>
     <div>
         <label for="image1">Image 1 :</label>

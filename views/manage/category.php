@@ -57,7 +57,7 @@ $categories = $categoryRepository->findAll();
                     <td><?= htmlspecialchars(strip_tags($category->getDescription())) ?></td>
                     <td>
                         <?php if ($category->getImage()): ?>
-                            <img src="../../../public/uploads/<?= htmlspecialchars($category->getImage()) ?>" style="max-width:40px;max-height:40px;" alt="image">
+                            <img src="../../public/uploads/<?= htmlspecialchars($category->getImage()) ?>" style="max-width:40px;max-height:40px;" alt="image">
                         <?php endif; ?>
                     </td>
                     <td>

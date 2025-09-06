@@ -9,9 +9,6 @@ use App\Repository\CategoryRepository;
 use App\Repository\ArticleRepository;
 use App\Controller\ArticleController;  
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
 
 $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);

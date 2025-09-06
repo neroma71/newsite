@@ -39,7 +39,7 @@ class ArticleController
                     'categoryId' => $categoryId
                 ]);
                 $this->articleRepository->createArticle($article);
-                header('Location: /jerome2/views/manage/articlemanager.php');
+                header('Location: /newsite/views/manage/articlemanager.php');
                 exit;
             } else {
                 foreach ($errors as $error) {
@@ -134,7 +134,7 @@ class ArticleController
                 // sauvegarde de l'update de l'article
                 $this->articleRepository->updateArticle($article);
 
-                header('Location: /newsite/views/manage/articlemanager.php');
+                header('Location: ./articlemanager.php');
                 exit;
             }
         }
@@ -151,7 +151,7 @@ class ArticleController
                 }
 
                 $this->articleRepository->deleteArticle($id);
-                header('Location: /newsite/views/manage/articlemanager.php');
+                header('Location: ./articlemanager.php');
                 exit;
             }
 

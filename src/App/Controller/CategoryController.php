@@ -33,7 +33,7 @@ class CategoryController
                 ]);
                 $this->categoryRepository->createCategory($category);
                 // Redirection après traitement
-                 header('Location: /newsite/views/manage/category.php');
+                 header('Location: ../../views/manage/category.php');
                 exit;
             } else {
                 // Gérer les erreurs d'upload
@@ -72,7 +72,7 @@ class CategoryController
             $this->categoryRepository->updateCategory($category);
 
             // Redirection après traitement
-            header('Location: /newsite/src/views/manage/category.php');
+            header('Location: ../../views/manage/category.php');
             exit;
         }
     }

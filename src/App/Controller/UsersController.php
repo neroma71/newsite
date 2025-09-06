@@ -78,7 +78,7 @@ class UsersController
                 session_regenerate_id(true); //  protection contre fixation de session
                 $_SESSION['user_id'] = $user->getId(); //  Ne stocke que l'ID
          
-                header('Location: /jerome2/views/manage/dashboard.php');
+                header('Location: /newsite/views/manage/dashboard.php');
                 exit;
             } else {
                 $_SESSION['error'] = 'Identifiants invalides.';

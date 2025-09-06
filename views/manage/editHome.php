@@ -58,7 +58,7 @@ $home = $id ? $homeRepository->findById($id) : null;
     <div>
         <label for="content">Description :</label>
         <p>
-        <textarea name="description" id="content" required><?= htmlspecialchars($home->getDescription()) ?></textarea>
+        <textarea name="description" id="content"><?= htmlspecialchars($home->getDescription()) ?></textarea>
         </p>
     </div>
     <p>Formats acceptés : jpg, jpeg, png, gif. Taille max : 2 Mo par image.</p>
