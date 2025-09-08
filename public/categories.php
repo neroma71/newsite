@@ -147,7 +147,6 @@ $homes = $homeRepository->findAll();
     <footer>
         <p>du blabla</p>
     </footer>
-
     <script src="js/cat.js"></script>
 </body>
 </html>

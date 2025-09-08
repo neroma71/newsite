@@ -26,7 +26,6 @@ if(!$categoryId){
 }
 try
 {
-var_dump($query); // Ajoute ceci pour vérifier la valeur
 $articles = $articleRepository->findArticlesByCategoryAndQuery($categoryId, $query);
 $categories = $categoryRepository->findAll();
 $category = $categoryRepository->findById($categoryId);
@@ -48,6 +47,13 @@ $homes = $homeRepository->findAll();
     <link rel="stylesheet" href="css/categorie.css">
 </head>
 <body>
+    <div class="search-form">
+            <form action="result.php" method="GET">
+                <input type="hidden" name="category" value="<?= $categoryId ?>">
+                <input type="text" name="query" id="query" placeholder="Rechercher">
+                <button type="submit" class="submit"></button>
+            </form>
+        </div>
     <header>
         <div id="logo">
             <?php if (!empty($homes) && $homes[0]->getImage1()): ?>

@@ -1,3 +1,4 @@
+function initAnimations() {
 let body = document.querySelector('body');
 let catHeader = document.querySelector('.categories-header');
 let header = document.querySelector('header');
@@ -88,3 +89,7 @@ for (const link of nav) {
     link.classList.remove("hover-left", "hover-right");
   });
 }
+}
+
+document.addEventListener("DOMContentLoaded", initAnimations);
+document.addEventListener("pjax:loaded", initAnimations);

@@ -45,6 +45,11 @@ $categories = $categoryRepository->findAll();
                     <div id="illustration">
                         <img src="./uploads/<?= htmlspecialchars($home->getImage2()) ?>" alt="mountain background" class="zoom">
                     </div>
+                    <a href="#description">
+                    <div id="arrow-down">
+                        <div class="arrow"></div>
+                    </div>
+                    </a>
             </section>
             <section id="description">
                 <h2 class="description-title slidingTitle">À propos</h2>
@@ -57,8 +62,10 @@ $categories = $categoryRepository->findAll();
                     <?php foreach ($categories as $category): ?>
                         <a href="categories.php?id=<?= htmlspecialchars($category->getId()); ?>" class="category-link">
                             <div class="category" style="background:url(./uploads/<?= htmlspecialchars($category->getImage()) ?>)no-repeat; background-size:cover;">
-                                <h3><?= htmlspecialchars($category->getTitle()) ?></h3>
-                                <p><?= htmlspecialchars($category->getDescription()) ?></p>
+                                <div class="overlay">
+                                    <h3><?= htmlspecialchars($category->getTitle()) ?></h3>
+                                    <p><?= htmlspecialchars($category->getDescription()) ?></p>
+                                </div>
                             </div>
                         </a>
                     <?php endforeach; ?>
@@ -92,6 +99,6 @@ $categories = $categoryRepository->findAll();
         <?php endforeach; ?>
         
     </main>
-    <script src="js/home.js"></script>
+     <script src="js/home.js"></script>
 </body>
 </html>

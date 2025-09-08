@@ -1,4 +1,3 @@
 <?php
-header('Location: /newsite/public/index.php');
-exit;
+header ("Location: public/index.php");
 ?>

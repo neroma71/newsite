@@ -140,7 +140,6 @@ h1{
    width:100vw;
    min-height:100vh;
    margin:0;
- 
    overflow:hidden;
 }
 #illustration{
@@ -148,6 +147,30 @@ h1{
    height:100vh;
    overflow:hidden;
 }
+#arrow-down{
+    position:absolute;
+    bottom:50px;
+    left:50%;
+    transform:translateX(-50%);
+    width:40px;
+    height:40px;
+    background:rgba(255, 255, 255, 0.3);
+    backdrop-filter : blur(10px);
+    -webkit-backdrop-filter : blur(10px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius:50%;
+    cursor:pointer;
+}
+.arrow{
+    width: 20px;
+    height: 20px;
+    background:rgba(255, 255, 255, 0.3);
+    backdrop-filter : blur(10px);
+    -webkit-backdrop-filter : blur(10px);
+    margin:10px auto;
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    }
 .zoom{
   position: absolute;
   top: 0;
@@ -228,10 +251,40 @@ h1{
     width:300px;
     height:300px;
     margin:5px;
+}
+.overlay{
+    position:relative;
+    width:80%;
+    height:80%;
+    top:10%;
+    left:10%;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
+    background:rgba(255, 255, 255, 0.3);
+    backdrop-filter : blur(10px);
+    -webkit-backdrop-filter : blur(10px); 
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    transition: all 0.3s ease-in-out;
+}
+.category-link:hover .overlay{
+    background:rgba(255, 255, 255, 0.1);
+    backdrop-filter : blur(0px);
+    -webkit-backdrop-filter : blur(0px); 
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.overlay h3{
+    font-weight:200;
+    font-size:25px;
+    text-align:center;
+    margin-bottom:0;
+}
+.overlay p{
+    font-weight:300;
+    text-align:center;
 }
 #contact{
     width:100%;

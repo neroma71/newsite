@@ -115,5 +115,6 @@ $splitContent = ArticleController::extractYoutubeOembed($article->getContent());
         <footer>
             <p>© 2024 Mon Site d'Articles</p>
         </footer>
+        <script src="js/article.js"></script>
 </body>
 </html>
