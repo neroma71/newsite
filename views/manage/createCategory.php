@@ -7,11 +7,9 @@ use App\Repository\CategoryRepository;
 use App\Controller\CategoryController;
 $categoryRepository = new CategoryRepository($bdd);
 $controller = new CategoryController($categoryRepository);
-// Traitement du formulaire si POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->create();
-    exit;
-}
+
+$controller->create();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

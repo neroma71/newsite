@@ -13,10 +13,8 @@ $controller = new HomeController($homeRepository);
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 $errors = [];
-// Traitement du formulaire si POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->update($id, $errors);
-}
+$controller->update($id, $errors);
+
 
 // On récupère toujours l'objet Home pour affichage
 $home = $id ? $homeRepository->findById($id) : null;

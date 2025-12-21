@@ -5,16 +5,19 @@ use App\Repository\ArticleRepository;
 use App\Service\ImageUploader;
 use App\Entity\Articles;
 use App\Repository\ImageRepository;
+use App\Repository\CategoryRepository;
 
 class ArticleController
 {
     private ArticleRepository $articleRepository;
     private ImageRepository $imageRepository;
+    private CategoryRepository $categoryRepository;
 
-    public function __construct(ArticleRepository $articleRepository, ImageRepository $imageRepository)
+    public function __construct(ArticleRepository $articleRepository, ImageRepository $imageRepository, CategoryRepository $categoryRepository )
     {
         $this->articleRepository = $articleRepository;
         $this->imageRepository = $imageRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function create()
@@ -26,10 +29,14 @@ class ArticleController
         die('Erreur CSRF : token invalide');
         }
 
-            $title = $_POST['title'] ?? '';
-            $content = $_POST['content'] ?? '';
+            $title = trim($_POST['title'] ?? '');
+            $content = trim($_POST['content'] ?? '');
             $images = $_FILES['images'] ?? null;
             $categoryId = $_POST['category_id'] ?? null;
+
+             if (!is_numeric($categoryId) || !$this->categoryRepository->findById((int)$categoryId)) {
+                        throw new \Exception("Catégorie invalide.");
+            }
 
             $errors = [];
             $uploadDir = __DIR__ . '/../../../public/uploads/';
@@ -66,8 +73,8 @@ class ArticleController
                 if (!$postedToken || !hash_equals($_SESSION['csrf_token'], $postedToken)) {
                 throw new \Exception("Invalid CSRF token");
                 }
-                $title = $_POST['title'] ?? $article->getTitle();
-                $content = $_POST['content'] ?? $article->getContent();
+                $title = trim($_POST['title'] ?? $article->getTitle());
+                $content = trim($_POST['content'] ?? $article->getContent());
                 $images = $_FILES['images'] ?? null;
                 $imageFiles = $_FILES['image_files'] ?? [];
                 $categoryId = $_POST['category_id'] ?? $article->getCategoryId();
@@ -132,6 +139,11 @@ class ArticleController
                     $this->imageRepository->update($image);
                 }
 
+                   // Validation catégorie
+                    if (!is_numeric($categoryId) || !$this->categoryRepository->findById((int)$categoryId)) {
+                        throw new \Exception("Catégorie invalide.");
+                    }
+
                 // mise à jour des autres infos
                 $article->setTitle($title);
                 $article->setContent($content);
@@ -145,20 +157,36 @@ class ArticleController
             }
         }
 
-      public function delete(int $id, string $csrfToken)
+      public function delete(): void
             {
-                if (!isset($_SESSION['csrf_token']) || $csrfToken !== $_SESSION['csrf_token']) {
-                    throw new \Exception('Token CSRF invalide');
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['delete_id'], $_POST['csrf_token'])) {
+                    return;
                 }
 
-                $article = $this->articleRepository->findById($id);
-                if (!$article) {
-                    throw new \Exception("Article not found");
-                }
+                try {
+                    $id = (int) $_POST['delete_id'];
+                    $csrfToken = $_POST['csrf_token'] ?? '';
 
-                $this->articleRepository->deleteArticle($id);
-                header('Location: ./articlemanager.php');
-                exit;
+                    // Vérification CSRF
+                    if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+                        throw new \Exception('Erreur CSRF : token invalide');
+                    }
+
+                    $article = $this->articleRepository->findById($id);
+                    if (!$article) {
+                        throw new \Exception("Aucun article trouvé avec l’ID $id.");
+                    }
+
+                    $this->articleRepository->deleteArticle($id);
+
+                    header('Location: /newsite/views/manage/articlemanager.php');
+                    exit;
+
+                } catch (\Exception $e) {
+                    echo "Erreur : " . htmlspecialchars($e->getMessage());
+                    echo "<br><a href='javascript:history.back()'>Retour</a>";
+                    exit;
+                }
             }
 
       public function getPaginatedData(int $categoryId, int $currentPage = 1, int $limit = 10): array

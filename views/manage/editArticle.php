@@ -19,12 +19,9 @@ $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
 
-// Traitement du formulaire si POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller = new ArticleController($articleRepository, $imageRepository);
-    $controller->update($id);
-    exit;
-}
+$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository);
+$controller->update($id);
+
 
 // Récupération de l'article pour affichage
 $article = $id ? $articleRepository->findById($id) : null;

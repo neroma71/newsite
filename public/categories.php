@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../utils/db_connect.php';
+require_once __DIR__ . '/../utils/constants.php';  // Ajout de constants.php
 
 use App\Repository\CategoryRepository;
 use App\Repository\ImageRepository;
@@ -23,7 +24,7 @@ if (!$categoryId) {
 $categorie = $categoryRepository->findById($categoryId);
 
 // Instancie le contrôleur ArticleController
-$articleController = new ArticleController($articleRepository, $imageRepository);
+$articleController = new ArticleController($articleRepository, $imageRepository, $categoryRepository);
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max(1, $page);
@@ -52,35 +53,42 @@ $homes = $homeRepository->findAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/categorie.css">
-    
+    <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/categorie.css">
 </head>
 <body>
      <div class="search-form">
-            <form action="result.php" method="GET">
+            <form action="<?= BASE_URL ?>/public/result.php" method="GET">
                 <input type="hidden" name="category" value="<?= $categoryId ?>">
                 <input type="text" name="query" id="query" placeholder="Rechercher">
                 <button type="submit" class="submit"></button>
             </form>
         </div>
     <header>
-        <a href="index.php">
+        <a href="<?= BASE_URL ?>">
         <div id="logo">
             <?php if ($homes[0]->getImage1()): ?>
-                <img src="uploads/<?= htmlspecialchars($homes[0]->getImage1()) ?>" alt="Logo">
+                <img src="<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($homes[0]->getImage1()) ?>" alt="Logo">
             <?php endif; ?>     
         </div>
         </a>
         <nav>
             <ul>
                 <li>
-                    <a class="nav-link active" href="./index.php">Accueil</a>
+                    <a class="nav-link active" href="<?= BASE_URL ?>/index.php">Accueil</a>
                 </li>
                 <li>
-                    <a class="nav-link" href="./index.php#categories">Catégories</a>
+                    <a class="nav-link active" href="<?= BASE_URL ?>/actu.php">Actus</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="<?= BASE_URL ?>/index.php#categories">Catégories</a>
                     <ul class="dropdown">
                         <?php foreach ($categoryRepository->findAll() as $category): ?>
-                            <li><a class="nav-link" href="categories.php?id=<?= $category->getId(); ?>"><?= htmlspecialchars($category->getTitle()); ?></a></li>
+                            <li>
+                                <a class="nav-link" 
+                                   href="<?= BASE_URL ?>/categories.php?id=<?= $category->getId(); ?>">
+                                    <?= htmlspecialchars($category->getTitle()); ?>
+                                </a>
+                            </li>
                         <?php endforeach; ?>
                     </ul>
                 </li>
@@ -91,7 +99,7 @@ $homes = $homeRepository->findAll();
     </header>
     <!-- ... ton header ... -->
     <main>
-        <div class="category" style="background:url(./uploads/<?= htmlspecialchars($categorie->getImage()) ?>) no-repeat; background-size:cover;"></div>
+        <div class="category" style="background:url(<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($categorie->getImage()) ?>) no-repeat; background-size:cover;"></div>
         <?php if ($totalPages > 1): ?>
             <div class="pagination">
                 <ul>
@@ -124,7 +132,7 @@ $homes = $homeRepository->findAll();
         <?php endif; ?>
         <section class="articles">
             <?php foreach ($articles as $article): ?>
-                <a href="article.php?id=<?= htmlspecialchars($article->getId());?>">
+                <a href="<?= BASE_URL ?>/article.php?id=<?= htmlspecialchars($article->getId());?>">
                 <article class="article">
                     <div class="rollover"></div>
                         <h2><?= htmlspecialchars($article->getTitle()) ?></h2>
@@ -133,7 +141,7 @@ $homes = $homeRepository->findAll();
                         if (!empty($images)) {
                             $firstImage = $images[0];
                         ?>
-                            <img src="../public/<?= htmlspecialchars($firstImage->getPath()) ?>" alt="<?= htmlspecialchars($firstImage->getImageTitle()) ?>">
+                            <img src="<?= BASE_URL ?>/public/<?= htmlspecialchars($firstImage->getPath()) ?>" alt="<?= htmlspecialchars($firstImage->getImageTitle()) ?>">
                         <?php } ?>
                 </article>
                 </a>
@@ -147,9 +155,6 @@ $homes = $homeRepository->findAll();
     <footer>
         <p>du blabla</p>
     </footer>
-    <script src="js/cat.js"></script>
+    <script src="<?= BASE_URL ?>/public/js/cat.js"></script>
 </body>
-</html>
-</body>
-</html>
 </html>

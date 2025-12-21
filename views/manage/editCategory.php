@@ -9,11 +9,9 @@ $categoryRepository = new CategoryRepository($bdd);
 $controller = new CategoryController($categoryRepository);
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-// Traitement du formulaire si POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->update($id);
-    exit;
-}
+
+$controller->update($id);
+
 // On récupère toujours l'objet Category pour affichage
 $category = $id ? $categoryRepository->findById($id) : null;    
 ?>
@@ -50,7 +48,7 @@ $category = $id ? $categoryRepository->findById($id) : null;
             <?php endif; ?>
         </div>
         <div class="formdiv">
-            <button type="submit" class="btn btn-primary">Créer</button>
+            <button type="submit" class="btn btn-primary">Modifier</button>
         </div>
     </form>
     </div>

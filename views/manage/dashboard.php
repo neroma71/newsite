@@ -39,7 +39,10 @@ if (!$user) {
                     </div>  
                     <div class="action-card">
                         <a href="articlemanager.php">Gérer les articles</a>
-                    </div>   
+                    </div>
+                    <div class="action-card">
+                        <a href="actumanager.php">Gérer les actus</a>
+                    </div>     
                 </div>
         </section>
 </body>

@@ -10,11 +10,8 @@ use App\Controller\HomeController;
 $homeRepository = new HomeRepository($bdd);
 $controller = new HomeController($homeRepository);
 
-// Traitement du formulaire si POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->create();
-    exit;
-}
+$controller->create();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

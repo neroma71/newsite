@@ -13,15 +13,10 @@ use App\Controller\ArticleController;
 $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-$controller = new ArticleController($articleRepository, $imageRepository);
+$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    try {
-        $controller->delete((int)$_POST['delete_id'], $_POST['csrf_token']);
-    } catch (\Exception $e) {
-        echo "Erreur : " . htmlspecialchars($e->getMessage());
-    }
-}
+$controller->delete();
+
 
 $articles = $articleRepository->findAllWithCategory();
 ?>

@@ -13,13 +13,9 @@ $categories = $categoryRepository->findAll();
 $imageRepository = new ImageRepository($bdd);
 
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-$controller = new ArticleController($articleRepository, $imageRepository);
+$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository);
 
-// Traitement du formulaire si POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->create();
-    exit;
-}
+$controller->create();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -71,12 +67,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-    <script>
-        ClassicEditor
-            .create( document.querySelector( '#content' ) )
-            .catch( error => {
-                console.error( error );
-            } );
-    </script>
+     <script>
+ClassicEditor
+    .create(document.querySelector('#content'), {
+        htmlSupport: {
+            allow: [
+                {
+                    name: /.*/, // autorise toutes les balises…
+                    attributes: true,
+                    classes: true,
+                    styles: true
+                }
+            ],
+            disallow: [
+                {
+                    name: 'script' // …sauf <script>
+                },
+            ]
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+</script>
     </body>
     </html>

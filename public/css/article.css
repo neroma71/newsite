@@ -64,6 +64,7 @@ nav .dropdown{
     top:40px;
     right:0;
     height:auto;
+    z-index:100;
 }
 .dropdown li{
     height:40px;
@@ -83,7 +84,7 @@ nav .dropdown{
     top:120px;
     background:white;
     border-bottom:1px solid lightgray;
-    z-index:100;
+    z-index:10;
 }
 .link-btn{
     margin:0 30px;

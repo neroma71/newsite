@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../utils/db_connect.php';
+require_once __DIR__ . '/../utils/constants.php';
 
 use App\Repository\ImageRepository;
 use App\Repository\CategoryRepository;
@@ -11,29 +12,29 @@ use App\Controller\ArticleController;
 $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-$articleController = new ArticleController($articleRepository, $imageRepository);
+$articleController = new ArticleController($articleRepository, $imageRepository, $categoryRepository); 
 
 $id = isset($_GET['id']) ? $_GET['id'] : null;
+// Redirection vers l'accueil si erreur
 if (!is_numeric($id) || (int)$id <= 0) {
-    header('Location: ./index.php');
+    header('Location: ' . BASE_URL);
     exit;
 }
 $id = (int)$id;
 
 $categoryId = isset($_GET['category']) ? $_GET['category'] : null;
 if ($categoryId !== null && (!is_numeric($categoryId) || (int)$categoryId <= 0)) {
-    header('Location: ./index.php');
+    header('Location: ' . BASE_URL);
     exit;
 }
 if ($categoryId !== null) {
     $categoryId = (int)$categoryId;
 }
 
-
 $article = $articleRepository->findById($id);
 
 if (!$article) {
-    header('Location: ./index.php');
+    header('Location: ' . BASE_URL);
     exit;
 }
 
@@ -44,11 +45,9 @@ if (!$categoryId || !$categoryRepository->findById($categoryId)) {
 
 $categorie = $categoryRepository->findById($categoryId); 
 if (!$categorie) {
-    header('Location: ./index.php');
+    header('Location: ' . BASE_URL);
     exit;
 }
-
-
 // Détermine l'id du précédent et du suivant
 $prevNext = $articleController->getPrevNextArticleIds($id, $categoryId);
 $prevId = $prevNext['prev'];
@@ -64,7 +63,7 @@ $splitContent = ArticleController::extractYoutubeOembed($article->getContent());
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-     <link href="css/article.css" rel="stylesheet">
+     <link href="<?= BASE_URL ?>/public/css/article.css" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -72,13 +71,13 @@ $splitContent = ArticleController::extractYoutubeOembed($article->getContent());
         <nav>
             <ul>
                 <li>
-                    <a class="nav-link active" href="./index.php">Accueil</a>
+                    <a class="nav-link active" href="<?= BASE_URL ?>">Accueil</a>
                 </li>
                 <li>
-                    <a class="nav-link" href="./index.php#categories">Catégories</a>
+                    <a class="nav-link" href="<?= BASE_URL ?>#categories">Catégories</a>
                     <ul class="dropdown">
                         <?php foreach ($categoryRepository->findAll() as $category): ?>
-                            <li><a class="nav-link" href="categories.php?id=<?= $category->getId(); ?>"><?= htmlspecialchars($category->getTitle()); ?></a></li>
+                            <li><a class="nav-link" href="<?= BASE_URL ?>/categories.php?id=<?= $category->getId(); ?>"><?= htmlspecialchars($category->getTitle()); ?></a></li>
                         <?php endforeach; ?>
                     </ul>
                 </li>
@@ -88,10 +87,10 @@ $splitContent = ArticleController::extractYoutubeOembed($article->getContent());
     <div class="nav-btn">
         <div class="link-btn">
             <?php if ($prevId): ?>
-               <div class="arrow-left"></div><a href="article.php?id=<?= $prevId ?>&category=<?= $categoryId ?>">Précédent</a>
+               <div class="arrow-left"></div><a href="<?= BASE_URL ?>/article.php?id=<?= $prevId ?>&category=<?= $categoryId ?>">Précédent</a>
             <?php endif; ?>
             <?php if ($nextId): ?>
-                <a href="article.php?id=<?= $nextId ?>&category=<?= $categoryId ?>">Suivant</a><div class="arrow-right"></div>
+                <a href="<?= BASE_URL ?>/article.php?id=<?= $nextId ?>&category=<?= $categoryId ?>">Suivant</a><div class="arrow-right"></div>
             <?php endif; ?>
         </div>
     </div>
@@ -107,7 +106,9 @@ $splitContent = ArticleController::extractYoutubeOembed($article->getContent());
                     </div>
                 <?php endforeach; ?>
                 <?php foreach ($article->getImages() as $image): ?>
-                    <img src="./<?= htmlspecialchars($image->getPath()) ?>" alt="<?= htmlspecialchars($image->getImageTitle()) ?>" loading="lazy">
+                    <img src="<?= BASE_URL ?>/public/<?= htmlspecialchars($image->getPath()) ?>" 
+                         alt="<?= htmlspecialchars($image->getImageTitle()) ?>" 
+                         loading="lazy">
                 <?php endforeach; ?>
             </section>
         </div>
@@ -115,6 +116,6 @@ $splitContent = ArticleController::extractYoutubeOembed($article->getContent());
         <footer>
             <p>© 2024 Mon Site d'Articles</p>
         </footer>
-        <script src="js/article.js"></script>
+        <script src="<?= BASE_URL ?>/public/js/article.js"></script>
 </body>
 </html>
