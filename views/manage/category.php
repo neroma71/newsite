@@ -4,10 +4,20 @@ require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
 use App\Repository\CategoryRepository;
+use App\Repository\ArticleRepository;
+
 use App\Controller\CategoryController;
+use App\Repository\ImageRepository;
 
 $categoryRepository = new CategoryRepository($bdd);
-$controller = new CategoryController($categoryRepository);
+$articleRepository = new ArticleRepository($bdd, $categoryRepository, new ImageRepository($bdd));
+
+
+$controller = new CategoryController(
+    $bdd,
+    $categoryRepository,
+    $articleRepository,
+);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     try {

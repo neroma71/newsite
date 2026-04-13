@@ -6,18 +6,21 @@ use App\Service\ImageUploader;
 use App\Entity\Articles;
 use App\Repository\ImageRepository;
 use App\Repository\CategoryRepository;
+use App\Service\YoutubeEmbedService;
 
 class ArticleController
 {
     private ArticleRepository $articleRepository;
     private ImageRepository $imageRepository;
     private CategoryRepository $categoryRepository;
+    private YoutubeEmbedService $youtubeEmbedService;
 
-    public function __construct(ArticleRepository $articleRepository, ImageRepository $imageRepository, CategoryRepository $categoryRepository )
+    public function __construct(ArticleRepository $articleRepository, ImageRepository $imageRepository, CategoryRepository $categoryRepository, YoutubeEmbedService $youtubeEmbedService )
     {
         $this->articleRepository = $articleRepository;
         $this->imageRepository = $imageRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->youtubeEmbedService = $youtubeEmbedService;
     }
 
     public function create()
@@ -42,7 +45,17 @@ class ArticleController
             $uploadDir = __DIR__ . '/../../../public/uploads/';
             $uploader = new ImageUploader($uploadDir);
 
-            $uploadedImages = $uploader->uploadMultiple($images, $errors);
+            //  gère le cas où aucune image n'est envoyée
+            $uploadedImages = [];
+            if (
+                $images &&
+                isset($images['error']) &&
+                is_array($images['error']) &&
+                // Vérifie s'il y a au moins une image envoyée sans erreur
+                array_filter($images['error'], fn($err) => $err === UPLOAD_ERR_OK)
+            ) {
+                $uploadedImages = $uploader->uploadMultiple($images, $errors);
+            }
 
             if (empty($errors)) {
                 $article = new Articles([
@@ -207,56 +220,56 @@ class ArticleController
                 ];
             }
 
-    public function getPrevNextArticleIds(int $articleId, int $categoryId): array
+
+            public function show(): void
+            {
+                $id = (int) ($_GET['id'] ?? 0);
+                $categoryId = isset($_GET['category']) ? (int) $_GET['category'] : null;
+
+                if ($id <= 0) {
+                    header('Location: /');
+                    exit;
+                }
+
+                $article = $this->articleRepository->findById($id);
+
+                if (!$article) {
+                    header('Location: /');
+                    exit;
+                }
+
+                $categories = $this->categoryRepository->findAll();
+
+                if (!$categoryId || !$this->categoryRepository->findById($categoryId)) {
+                    $categoryId = $article->getCategoryId();
+                }
+
+                $categorie = $this->categoryRepository->findById($categoryId);
+
+                if (!$categorie) {
+                    header('Location: /');
+                    exit;
+                }
+
+                $splitContent = $this->youtubeEmbedService->extract($article->getContent());
+
+                $prevNext = $this->articleRepository->findPrevNext($id, $categoryId);
+
+                $this->render('article.php', [
+                    'article' => $article,
+                    'categories' => $categories,
+                    'categorie' => $categorie,
+                    'categoryId' => $categoryId,
+                    'prevId' => $prevNext['prev'],
+                    'nextId' => $prevNext['next'],
+                    'splitContent' => $splitContent,
+                ]);
+            }
+
+     private function render(string $view, array $data = []): void
     {
-        $articles = $this->articleRepository->findByCategoryId($categoryId, 1000, 0);
-        $prevId = $nextId = null;
-        $currentIndex = null;
-        foreach ($articles as $idx => $art) {
-            if ($art->getId() == $articleId) {
-                $currentIndex = $idx;
-                break;
-            }
-        }
-        if ($currentIndex !== null) {
-            if ($currentIndex > 0) {
-                $prevId = $articles[$currentIndex - 1]->getId();
-            }
-            if ($currentIndex < count($articles) - 1) {
-                $nextId = $articles[$currentIndex + 1]->getId();
-            }
-        }
-        return ['prev' => $prevId, 'next' => $nextId];
+            extract($data);
+            require __DIR__ . '/../../../public/' . $view;
     }
-
-    public static function embedYoutube($content) {
-        // Remplace les liens YouTube par des iframes
-        $pattern = '/https?:\/\/(www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/';
-        $replacement = '<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/$2" frameborder="0" allowfullscreen loading="lazy"></iframe>';
-        return preg_replace($pattern, $replacement, $content);
-    }
-
-    public static function embedYoutubeOembed($content) {
-         // Remplace le balisage <oembed> CKEditor par un iframe YouTube
-        return preg_replace_callback(
-            '/<figure class="media"><oembed url="https:\/\/youtu\.be\/([a-zA-Z0-9_-]+)[^"]*"><\/oembed><\/figure>/',
-            function ($matches) {
-                $videoId = $matches[1];
-                return '<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/' . $videoId . '" frameborder="0" allowfullscreen loading="lazy"></iframe>';
-            },
-            $content
-        );
-    }
-
-    public static function extractYoutubeOembed($content) {
-        // Récupère tous les <figure class="media"><oembed ...></oembed></figure>
-        $videos = [];
-        preg_match_all('/<figure class="media"><oembed url="https:\/\/youtu\.be\/([a-zA-Z0-9_-]+)[^"]*"><\/oembed><\/figure>/', $content, $matches, PREG_SET_ORDER);
-        foreach ($matches as $m) {
-            $videos[] = '<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/' . $m[1] . '" frameborder="0" allowfullscreen loading="lazy"></iframe>';
-        }
-        // Supprime les vidéos du contenu texte
-        $text = preg_replace('/<figure class="media"><oembed url="https:\/\/youtu\.be\/([a-zA-Z0-9_-]+)[^"]*"><\/oembed><\/figure>/', '', $content);
-        return ['text' => $text, 'videos' => $videos];
-    }
+    
 }

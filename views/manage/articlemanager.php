@@ -8,12 +8,14 @@ use App\Repository\ImageRepository;
 use App\Repository\CategoryRepository;  
 use App\Repository\ArticleRepository;
 use App\Controller\ArticleController;  
+use App\Service\YoutubeEmbedService;
 
 
 $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository);
+$youtubeEmbedService = new YoutubeEmbedService();
+$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeEmbedService);
 
 $controller->delete();
 
@@ -31,7 +33,7 @@ $articles = $articleRepository->findAllWithCategory();
 </head>
 <body>
      <header>
-        <p>manager article</p>
+        <p>Gérer les articles</p>
      </header>
     <div class="container">
         <p>

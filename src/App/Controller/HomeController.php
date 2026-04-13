@@ -5,6 +5,7 @@ use App\Entity\Home;
 use App\Repository\HomeRepository;
 use App\Service\ImageUploader;
 
+
 class HomeController
 {
     private HomeRepository $homeRepository;
@@ -19,9 +20,9 @@ class HomeController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Vérification CSRF
-        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        die('Erreur CSRF : token invalide');
-        }
+            if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+                die('Erreur CSRF : token invalide');
+            }
             $title = $_POST['title'] ?? '';
             $subtitle = $_POST['subtitle'] ?? '';
             $description = $_POST['description'] ?? '';
@@ -38,6 +39,12 @@ class HomeController
             $img2 = $uploader->upload($image2, null, $errors);
             $img3 = $uploader->upload($image3, null, $errors);
             $img4 = $uploader->upload($image4, null, $errors);
+
+            // Empêcher la création si erreurs d'upload
+            if (!empty($errors)) {
+                $_SESSION['errors'] = $errors;
+                return;
+            }
 
             $home = new Home([
                 'title' => $title,
@@ -136,20 +143,26 @@ class HomeController
 
     return $home;
 }
-public function delete(int $id, string $csrfToken)
-    {
-        if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
-            throw new \Exception('Token CSRF invalide');
+    public function delete(int $id, string $csrfToken)
+        {
+            if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+                throw new \Exception('Token CSRF invalide');
+            }
+
+            $home = $this->homeRepository->findById($id);
+            if (!$home) {
+                throw new \Exception("Accueil non trouvé");
+            }
+
+            $this->homeRepository->deleteHome($id);
+            header('Location: manager.php');
+            exit;
         }
 
-        $home = $this->homeRepository->findById($id);
-        if (!$home) {
-            throw new \Exception("Accueil non trouvé");
-        }
-
-        $this->homeRepository->deleteHome($id);
-        header('Location: manager.php');
-        exit;
+    public function show()
+    {   
+        $home = $this->homeRepository->findAll();
+        require __DIR__ . '/../../../public/index.php';
     }
 
 }

@@ -207,7 +207,43 @@
             }
             return $articles;
         }
+        //pagination pour les articles d'une catégorie sur la page categories.php
+        public function getPaginatedData(int $categoryId, int $page, int $limit): array
+        {
+        $offset = ($page - 1) * $limit;
 
+        $articles = $this->findByCategoryId($categoryId, $limit, $offset);
+        $totalArticles = $this->findCount($categoryId);
 
+        $totalPages = (int) ceil($totalArticles / $limit);
+
+        return [
+            'articles' => $articles,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalArticles' => $totalArticles
+        ];
+    }
+    public function findPrevNext(int $articleId, int $categoryId): array
+        {
+            // précédent (article plus ancien)
+            $prevStmt = $this->db->prepare("SELECT id FROM articles WHERE category_id = :category_id AND id < :id ORDER BY id DESC LIMIT 1");
+            $prevStmt->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+            $prevStmt->bindValue(':id', $articleId, PDO::PARAM_INT);
+            $prevStmt->execute();
+            $prev = $prevStmt->fetchColumn() ?: null;
+
+            // suivant (article plus récent)
+            $nextStmt = $this->db->prepare("SELECT id FROM articles WHERE category_id = :category_id AND id > :id ORDER BY id ASC LIMIT 1");
+            $nextStmt->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+            $nextStmt->bindValue(':id', $articleId, PDO::PARAM_INT);
+            $nextStmt->execute();
+            $next = $nextStmt->fetchColumn() ?: null;
+
+            return [
+                'prev' => $prev,
+                'next' => $next
+            ];
+        }
 }
 

@@ -4,9 +4,22 @@ require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
 use App\Repository\CategoryRepository;
+use App\Repository\ArticleRepository;
+use App\Repository\ImageRepository;
+use App\Repository\HomeRepository;
 use App\Controller\CategoryController;
+
 $categoryRepository = new CategoryRepository($bdd);
-$controller = new CategoryController($categoryRepository);
+$imageRepository = new ImageRepository($bdd);
+$homeRepository = new HomeRepository($bdd);
+$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
+
+$controller = new CategoryController(
+    $bdd,
+    $categoryRepository,
+    $articleRepository,
+    $homeRepository
+);
 
 $controller->create();
 

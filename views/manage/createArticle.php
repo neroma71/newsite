@@ -7,13 +7,15 @@ use App\Repository\ArticleRepository;
 use App\Controller\ArticleController;
 use App\Repository\CategoryRepository;
 use App\Repository\ImageRepository;
+use App\Service\YoutubeEmbedService;
 
 $categoryRepository = new CategoryRepository($bdd);
 $categories = $categoryRepository->findAll(); 
 $imageRepository = new ImageRepository($bdd);
 
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository);
+$youtubeEmbedService = new YoutubeEmbedService();
+$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeEmbedService);
 
 $controller->create();
 ?>

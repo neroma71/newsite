@@ -1,5 +1,27 @@
 <?php
 require_once __DIR__ . '/utils/constants.php';
+require_once __DIR__ . '/utils/db_connect.php';
+require_once __DIR__ . '/utils/autoloader.php';
+
+use App\Controller\CategoryController;
+use App\Controller\ArticleController;
+use App\Repository\CategoryRepository;
+use App\Repository\ArticleRepository;
+use App\Repository\ImageRepository;
+use App\Repository\HomeRepository;
+use App\Service\YoutubeEmbedService;
+
+
+\Autoloader::register();
+
+$categoryRepository = new CategoryRepository($bdd);
+$imageRepository = new ImageRepository($bdd);
+$homeRepository = new HomeRepository($bdd);
+$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
+$youtubeService = new YoutubeEmbedService();
+
+$categoryController = new CategoryController($bdd, $categoryRepository, $articleRepository, $homeRepository);
+$articleController = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeService);
 
 $publicDir = realpath(__DIR__ . '/public');
 $requestUri = $_SERVER['REQUEST_URI'];
@@ -13,7 +35,7 @@ if (defined('BASE_URL') && BASE_URL !== '' && strpos($path, BASE_URL) === 0) {
     }
 }
 
-// Retirer un éventuel préfixe /public dans l'URL
+// Retire un éventuel préfixe /public dans l'URL
 $path = preg_replace('~^/public~', '', $path);
 
 // Normaliser
@@ -27,11 +49,19 @@ if ($path === '/' || $path === '/index.php') {
     exit;
 }
 
-// Construire chemin réel dans /public
+if ($path === '/categories.php') {
+    $categoryController->show();
+    exit;
+}
+if ($path === '/article.php') {
+    $articleController->show();
+    exit;
+}
+// Construit chemin réel dans /public
 $target = $publicDir . $path;
 $real = realpath($target);
 
-// Vérifier que le fichier demandé est bien dans le dossier public
+// Vérifie que le fichier demandé est bien dans le dossier public
 if ($real && strpos($real, $publicDir) === 0 && is_file($real)) {
     $ext = strtolower(pathinfo($real, PATHINFO_EXTENSION));
 
@@ -63,7 +93,7 @@ if ($real && strpos($real, $publicDir) === 0 && is_file($real)) {
         exit;
     }
 
-    // Autres fichiers : forcer le téléchargement / affichage binaire
+    // Autres fichiers : force le téléchargement / affichage binaire
     header('Content-Type: application/octet-stream');
     readfile($real);
     exit;

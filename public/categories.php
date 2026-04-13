@@ -1,52 +1,3 @@
-<?php
-require_once __DIR__ . '/../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../utils/db_connect.php';
-require_once __DIR__ . '/../utils/constants.php';  // Ajout de constants.php
-
-use App\Repository\CategoryRepository;
-use App\Repository\ImageRepository;
-use App\Repository\HomeRepository;
-use App\Repository\ArticleRepository; 
-use App\Controller\ArticleController;
-
-$categoryRepository = new CategoryRepository($bdd);
-$imageRepository = new ImageRepository($bdd);
-$homeRepository = new HomeRepository($bdd);
-$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository); // Utilisation de l'objet
-
-$categoryId = isset($_GET['id']) ? (int) $_GET['id'] : null;
-if (!$categoryId) {
-     header('Location: /404.php');
-    exit;
-}
-
-$categorie = $categoryRepository->findById($categoryId);
-
-// Instancie le contrôleur ArticleController
-$articleController = new ArticleController($articleRepository, $imageRepository, $categoryRepository);
-
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$page = max(1, $page);
-
-$limit = 5; // nombre d'articles par page
-
-$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
-if ($searchQuery) {
-    $articles = $articleRepository->findArticlesByCategoryAndQuery($categoryId, $searchQuery);
-} else {
-    // pagination du contrôleur
-    $paginationData = $articleController->getPaginatedData($categoryId, $page, $limit);
-
-    $articles = $paginationData['articles'];
-    $currentPage = $paginationData['currentPage'];
-    $totalPages = $paginationData['totalPages'];
-    $totalArticles = $paginationData['totalArticles'];
-}
-
-$homes = $homeRepository->findAll();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,18 +8,18 @@ $homes = $homeRepository->findAll();
 </head>
 <body>
      <div class="search-form">
-            <form action="<?= BASE_URL ?>/public/result.php" method="GET">
-                <input type="hidden" name="category" value="<?= $categoryId ?>">
-                <input type="text" name="query" id="query" placeholder="Rechercher">
-                <button type="submit" class="submit"></button>
-            </form>
+            <form method="GET">
+    <input type="hidden" name="id" value="<?= $categoryId ?>">
+    <input type="text" name="search"
+           value="<?= htmlspecialchars($search ?? '') ?>"
+           placeholder="Rechercher">
+    <button type="submit"></button>
+</form>
         </div>
     <header>
         <a href="<?= BASE_URL ?>">
         <div id="logo">
-            <?php if ($homes[0]->getImage1()): ?>
-                <img src="<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($homes[0]->getImage1()) ?>" alt="Logo">
-            <?php endif; ?>     
+             <!-- image du logo -->
         </div>
         </a>
         <nav>
@@ -82,7 +33,7 @@ $homes = $homeRepository->findAll();
                 <li>
                     <a class="nav-link" href="<?= BASE_URL ?>/index.php#categories">Catégories</a>
                     <ul class="dropdown">
-                        <?php foreach ($categoryRepository->findAll() as $category): ?>
+                        <?php foreach ($categories as $category): ?>
                             <li>
                                 <a class="nav-link" 
                                    href="<?= BASE_URL ?>/categories.php?id=<?= $category->getId(); ?>">
@@ -141,7 +92,7 @@ $homes = $homeRepository->findAll();
                         if (!empty($images)) {
                             $firstImage = $images[0];
                         ?>
-                            <img src="<?= BASE_URL ?>/public/<?= htmlspecialchars($firstImage->getPath()) ?>" alt="<?= htmlspecialchars($firstImage->getImageTitle()) ?>">
+                            <img src="<?= BASE_URL ?><?= htmlspecialchars($firstImage->getPath()) ?>" alt="<?= htmlspecialchars($firstImage->getImageTitle()) ?>">
                         <?php } ?>
                 </article>
                 </a>

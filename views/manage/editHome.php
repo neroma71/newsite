@@ -5,9 +5,13 @@ Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
 use App\Repository\HomeRepository;
 use App\Controller\HomeController;
+use App\Repository\CategoryRepository;
+
 
 $homeRepository = new HomeRepository($bdd);
-$controller = new HomeController($homeRepository);
+$categoryRepository = new CategoryRepository($bdd);
+
+$controller = new HomeController($homeRepository, $categoryRepository);
 
 // Récupérer l'id de la home à modifier
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;

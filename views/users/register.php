@@ -1,4 +1,5 @@
 <?php
+//require_once __DIR__ . '/../../utils/session_init.php';
 require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
@@ -47,4 +48,4 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>     
     </div>
 </body>   
-</html>           
+</html>

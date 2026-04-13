@@ -4,9 +4,19 @@ require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
 use App\Repository\CategoryRepository;
+use App\Repository\ArticleRepository;
+use App\Repository\ImageRepository;
 use App\Controller\CategoryController;
+
 $categoryRepository = new CategoryRepository($bdd);
-$controller = new CategoryController($categoryRepository);
+$imageRepository = new ImageRepository($bdd);
+$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
+
+$controller = new CategoryController(
+    $bdd,
+    $categoryRepository,
+    $articleRepository,
+);
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -39,13 +49,14 @@ $category = $id ? $categoryRepository->findById($id) : null;
             <textarea name="description" id="description" required><?= htmlspecialchars($category->getDescription()) ?></textarea>
         </div>
         <div class="formdiv">
-            <p><label for="image">Image :</label></p>
-            <input type="file" name="image" id="image" accept="image/*" class="btn btn-primary"><br />
+            <p>Image actuelle :</p>
+             <?php if ($category->getImage()): ?>
+            <img src="../../public/uploads/<?= htmlspecialchars($category->getImage()) ?>" style="max-width:100px;max-height:100px;" alt=""><br>
+            <?php endif; ?>
         </div>
         <div class="formdiv">
-             <?php if ($category->getImage()): ?>
-            <img src="../../../public/uploads/<?= htmlspecialchars($category->getImage()) ?>" style="max-width:100px;max-height:100px;" alt="Image 3 actuelle"><br>
-            <?php endif; ?>
+            <p><label for="image">Modifier l'image :</label></p>
+            <input type="file" name="image" id="image" accept="image/*" class="btn btn-primary"><br />
         </div>
         <div class="formdiv">
             <button type="submit" class="btn btn-primary">Modifier</button>

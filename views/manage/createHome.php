@@ -6,12 +6,16 @@ require_once __DIR__ . '/../../utils/db_connect.php';
 use App\Repository\HomeRepository;
 use App\Controller\HomeController;
 
-// Connexion à la base de données via $bdd défini dans db_connect
-$homeRepository = new HomeRepository($bdd);
-$controller = new HomeController($homeRepository);
+// Gestion du cas où la taille du POST dépasse la limite PHP
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES)) {
+    $errorPostSize = "Une ou plusieurs images sont trop volumineuses (max 2 Mo par image, 8 Mo total).";
+} else {
+    // Connexion à la base de données via $bdd défini dans db_connect
+   $homeRepository = new HomeRepository($bdd);
+   $controller = new HomeController($homeRepository);
 
-$controller->create();
-
+    $controller->create();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,6 +26,9 @@ $controller->create();
 </head>
 <body>
 <h2>Créer l'accueil</h2>
+<?php if (isset($errorPostSize)): ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($errorPostSize) ?></div>
+<?php endif; ?>
 <form method="post" enctype="multipart/form-data" action="">
     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
     <div>
@@ -37,7 +44,7 @@ $controller->create();
         <textarea name="description" id="content"></textarea>
     </div>
     <div>
-        <label for="image1">Image 1 :</label>
+        <label for="image1">Logo :</label>
         <input type="file" name="image1" id="image1" accept="image/*"><br />
     </div>
     <div>

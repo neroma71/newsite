@@ -17,9 +17,10 @@ header{
     z-index: 100;
 }
 header h1{
-    margin:20px 50px;
+    position:absolute;
+    left:30px;
+    top:50px;
     font-weight:100;
-    line-height: 120px;
     color: #333;
 }
 nav{

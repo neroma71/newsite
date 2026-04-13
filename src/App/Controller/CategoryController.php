@@ -3,13 +3,21 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use App\Service\ImageUploader;
+use App\Repository\ArticleRepository;
+use PDO;
+
 class CategoryController
 {
+    private PDO $db;
     private CategoryRepository $categoryRepository;
+    private ArticleRepository $articleRepository;
 
-    public function __construct(CategoryRepository $categoryRepository)
+
+    public function __construct(PDO $db,CategoryRepository $categoryRepository, ArticleRepository $articleRepository)
     {
+        $this->db = $db;
         $this->categoryRepository = $categoryRepository;
+        $this->articleRepository = $articleRepository;
     }
 
     public function create()
@@ -104,5 +112,37 @@ class CategoryController
 
         header('Location: ../../views/manage/category.php');
         exit;
+    }
+
+    public function show(): void
+    {
+        $categoryId = (int) ($_GET['id'] ?? 0);
+        $page = (int) ($_GET['page'] ?? 1);
+        $search = $_GET['search'] ?? '';
+
+        $categories = $this->categoryRepository->findAll();
+        $limit = 5;
+
+        $categorie = $this->categoryRepository->findById($categoryId);
+
+        if (!$categorie) {
+            require __DIR__ . '/../../public/404.php';
+            exit;
+        }
+
+        if ($search) {
+            $articles = $this->articleRepository->findArticlesByCategoryAndQuery($categoryId, $search);
+            $totalPages = 1;
+            $currentPage = 1;
+            $pagination = null;
+        } else {
+            $pagination = $this->articleRepository->getPaginatedData($categoryId, $page, $limit);
+
+            $articles = $pagination['articles'];
+            $totalPages = $pagination['totalPages'];
+            $currentPage = $pagination['currentPage'];
+        }
+
+        require __DIR__ . '/../../../public/categories.php';
     }
 }

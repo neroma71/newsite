@@ -8,6 +8,7 @@ use App\Repository\ImageRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\ArticleRepository;
 use App\Controller\ArticleController;
+use App\Service\YoutubeEmbedService;
 
 
 $csrfToken = $_SESSION['csrf_token'];
@@ -18,8 +19,9 @@ $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
+$youtubeEmbedService = new YoutubeEmbedService();
 
-$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository);
+$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeEmbedService);
 $controller->update($id);
 
 
