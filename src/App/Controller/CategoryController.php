@@ -107,6 +107,13 @@ class CategoryController
         if (!$category) {
             throw new \Exception("Catégorie introuvable");
         }
+        
+        $uploadDir = __DIR__ . '/../../../public/uploads/';
+        $image = $category->getImage();
+
+        if ($image && file_exists($uploadDir . $image)) {
+        unlink($uploadDir . $image);
+        }
 
         $this->categoryRepository->deleteCategory($id);
 

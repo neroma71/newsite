@@ -84,31 +84,38 @@ class ActuController
 
         return $actu;
     }
-
+    
     public function delete(int $id): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-            try {
-                // Vérification CSRF
-                if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-                    throw new \Exception('Erreur CSRF : token invalide');
-                }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
+        }
 
-                $actu = $this->actuRepository->findById($id);
-                if (!$actu) {
-                    throw new \Exception("Actu with ID $id not found.");
-                }
-
-                $this->actuRepository->deleteActu($id);
-                header('Location: /newsite/views/manage/actumanager.php');
-                exit;
-
-            } catch (\Exception $e) {
-                // Afficher l'erreur et permettre à l'utilisateur de revenir en arrière
-                echo "Erreur : " . htmlspecialchars($e->getMessage());
-                echo "<br><a href='javascript:history.back()'>Retour</a>";
-                exit;
+        try {
+            if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+                throw new \Exception('Erreur CSRF : token invalide');
             }
+
+            $actu = $this->actuRepository->findById($id);
+            if (!$actu) {
+                throw new \Exception("Actu not found.");
+            }
+
+            $uploadDir = __DIR__ . '/../../../public/uploads/';
+            $image = $actu->getImage();
+
+            if ($image && file_exists($uploadDir . $image)) {
+                unlink($uploadDir . $image);
+            }
+
+            $this->actuRepository->deleteActu($id);
+
+            header('Location: /newsite/views/manage/actumanager.php');
+            exit;
+
+        } catch (\Exception $e) {
+            echo "Erreur : " . htmlspecialchars($e->getMessage());
+            exit;
         }
     }
 }

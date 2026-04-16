@@ -15,102 +15,104 @@ class ImageUploader
         $this->uploadDir = $uploadDir;
     }
 
+    private function processUpload(array $file, array &$errors): ?string
+    {
+    if (!isset($file['name']) || $file['error'] !== UPLOAD_ERR_OK) {
+        $errors[] = "Erreur lors de l'upload.";
+        return null;
+    }
+
+    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $mimeType = mime_content_type($file['tmp_name']);
+    $size = $file['size'];
+
+    if (!in_array($extension, $this->allowedExtensions)) {
+        $errors[] = "Extension non autorisée pour {$file['name']}.";
+        return null;
+    }
+
+    if (!in_array($mimeType, $this->allowedMimeTypes)) {
+        $errors[] = "Type MIME non autorisé pour {$file['name']}.";
+        return null;
+    }
+
+    if ($size > $this->maxSize) {
+        $errors[] = "{$file['name']} est trop volumineux.";
+        return null;
+    }
+
+    $uniqueName = bin2hex(random_bytes(16)) . '_' . basename($file['name']);
+    $target = $this->uploadDir . $uniqueName;
+
+    if (!move_uploaded_file($file['tmp_name'], $target)) {
+        $errors[] = "Erreur lors du déplacement du fichier.";
+        return null;
+    }
+
+    return $uniqueName;
+    }
+
+    // Methode pour upload les images de la page home et les image de categorie
     public function upload(?array $file, ?string $currentImage = null, array &$errors = []): string
     {
-        if ($file && isset($file['name']) && $file['error'] === UPLOAD_ERR_OK) {
-            $fileInfo = pathinfo($file['name']);
-            $extension = strtolower($fileInfo['extension'] ?? '');
-            $mimeType = mime_content_type($file['tmp_name']);
-            $fileSize = $file['size'];
-            if (!in_array($extension, $this->allowedExtensions)) {
-                $errors[] = "Extension non autorisée pour " . $file['name'] . ".";
-                return $currentImage ?? '';
-            }
-            if (!in_array($mimeType, $this->allowedMimeTypes)) {
-                $errors[] = "Type MIME non autorisé pour " . $file['name'] . ".";
-                return $currentImage ?? '';
-            }
-            if ($fileSize > $this->maxSize) {
-                $errors[] = $file['name'] . " est trop volumineux (max 2 Mo).";
-                return $currentImage ?? '';
-            }
-            $uniqueName = uniqid() . '_' . basename($file['name']);
-            if (move_uploaded_file($file['tmp_name'], $this->uploadDir . $uniqueName)) {
-                if ($currentImage) {
-                    @unlink($this->uploadDir . basename($currentImage));
-                }
-                return $uniqueName;
-            } else {
-                $errors[] = "Erreur lors de l'upload de " . $file['name'] . ".";
-                return $currentImage ?? '';
-            }
+        if (
+            !$file ||
+            !isset($file['error']) ||
+            $file['error'] === UPLOAD_ERR_NO_FILE
+        ) {
+            return $currentImage ?? '';
         }
-        return $currentImage ?? '';
+
+        $result = $this->uploadSingle($file, $errors, $currentImage);
+
+        return $result ? $result['name'] : ($currentImage ?? '');
     }
-        // Methode pour update les images d'un article
-        public function uploadSingle(array $file, array &$errors): ?array
-            {
-                $filename = uniqid() . '-' . basename($file['name']);
-                $target = $this->uploadDir . $filename;
 
-                if (!move_uploaded_file($file['tmp_name'], $target)) {
-                    $errors[] = 'Impossible de déplacer le fichier uploadé.';
-                    return null;
-                }
+        // Methode pour update les images d'un article de la page actu
+    public function uploadSingle(array $file, array &$errors, ?string $currentImage = null): ?array
+    {
+        $filename = $this->processUpload($file, $errors);
 
-                return [
-                    'name' => $filename,
-                    'path' => '/uploads/' . $filename,
-                ];
+            if (!$filename) {
+                return null;
             }
+
+            // Supprimer ancienne image
+            if ($currentImage) {
+                $oldPath = $this->uploadDir . basename($currentImage);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
+            return [
+                'name' => $filename,
+                'path' => '/uploads/' . $filename, 
+            ];
+    }
 
         public function uploadMultiple(array $files, array &$errors): array
-            {
-                $uploadedImages = [];
+        {
+            $uploadedImages = [];
 
-                foreach ($files['tmp_name'] as $key => $tmpName) {
-                    $originalName = $files['name'][$key];
-                    $error = $files['error'][$key];
-                    $size = $files['size'][$key];
+            foreach ($files['tmp_name'] as $key => $tmpName) {
+                $file = [
+                    'name' => $files['name'][$key],
+                    'tmp_name' => $tmpName,
+                    'error' => $files['error'][$key],
+                    'size' => $files['size'][$key],
+                ];
 
-                    if ($error !== UPLOAD_ERR_OK) {
-                        $errors[] = "Erreur lors de l'upload du fichier $originalName.";
-                        continue;
-                    }
+                $filename = $this->processUpload($file, $errors);
 
-                    $fileInfo = pathinfo($originalName);
-                    $extension = strtolower($fileInfo['extension'] ?? '');
-                    $mimeType = mime_content_type($tmpName);
-
-                    if (!in_array($extension, $this->allowedExtensions)) {
-                        $errors[] = "Extension non autorisée pour $originalName.";
-                        continue;
-                    }
-
-                    if (!in_array($mimeType, $this->allowedMimeTypes)) {
-                        $errors[] = "Type MIME non autorisé pour $originalName.";
-                        continue;
-                    }
-
-                    if ($size > $this->maxSize) {
-                        $errors[] = "$originalName est trop volumineux (max 2 Mo).";
-                        continue;
-                    }
-
-                    $uniqueName = uniqid() . '_' . basename($originalName);
-                    $targetPath = $this->uploadDir . $uniqueName;
-
-                    if (move_uploaded_file($tmpName, $targetPath)) {
-                        $image = new Image();
-                        $image->setPath('/uploads/' . $uniqueName);
-                        $image->setImageTitle($originalName); // Titre = nom de fichier par défaut
-                        $uploadedImages[] = $image;
-                    } else {
-                        $errors[] = "Erreur lors de l'upload de $originalName.";
-                    }
+                if ($filename) {
+                    $image = new Image();
+                    $image->setPath('/uploads/' . $filename);
+                    $image->setImageTitle($file['name']);
+                    $uploadedImages[] = $image;
                 }
-
-                return $uploadedImages;
             }
 
+            return $uploadedImages;
+        }
 }

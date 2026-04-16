@@ -144,7 +144,14 @@ class ArticleController
                         $uploaded = $uploader->uploadSingle($file, $errors);
 
                         if ($uploaded) {
-                            $image->setPath('/uploads/' . $uploaded['name']);
+
+                        $oldPath = $uploadDir . basename($image->getPath());
+
+
+                        if (is_file($oldPath)) {
+                            unlink($oldPath);
+                        }
+                        $image->setPath('/uploads/' . $uploaded['name']);
                         }
                     }
 
@@ -170,37 +177,52 @@ class ArticleController
             }
         }
 
-      public function delete(): void
-            {
-                if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['delete_id'], $_POST['csrf_token'])) {
-                    return;
-                }
+        public function delete(): void
+        {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['delete_id'], $_POST['csrf_token'])) {
+            return;
+        }
 
-                try {
-                    $id = (int) $_POST['delete_id'];
-                    $csrfToken = $_POST['csrf_token'] ?? '';
+        try {
+            $id = (int) $_POST['delete_id'];
+            $csrfToken = $_POST['csrf_token'] ?? '';
 
-                    // Vérification CSRF
-                    if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
-                        throw new \Exception('Erreur CSRF : token invalide');
-                    }
-
-                    $article = $this->articleRepository->findById($id);
-                    if (!$article) {
-                        throw new \Exception("Aucun article trouvé avec l’ID $id.");
-                    }
-
-                    $this->articleRepository->deleteArticle($id);
-
-                    header('Location: /newsite/views/manage/articlemanager.php');
-                    exit;
-
-                } catch (\Exception $e) {
-                    echo "Erreur : " . htmlspecialchars($e->getMessage());
-                    echo "<br><a href='javascript:history.back()'>Retour</a>";
-                    exit;
-                }
+            if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+                throw new \Exception('Erreur CSRF : token invalide');
             }
+
+            $article = $this->articleRepository->findById($id);
+
+            if (!$article) {
+                throw new \Exception("Aucun article trouvé avec l’ID $id.");
+            }
+
+            $uploadDir = __DIR__ . '/../../../public/uploads/';
+
+            // 1. supprimer images physiques + BDD
+            foreach ($article->getImages() as $image) {
+
+                $filePath = $uploadDir . basename($image->getPath());
+
+                if (is_file($filePath)) {
+                    unlink($filePath);
+                }
+
+                $this->imageRepository->delete($image->getId());
+            }
+
+            // 2. supprimer article
+            $this->articleRepository->deleteArticle($id);
+
+            header('Location: /newsite/views/manage/articlemanager.php');
+            exit;
+
+        } catch (\Exception $e) {
+            echo "Erreur : " . htmlspecialchars($e->getMessage());
+            echo "<br><a href='javascript:history.back()'>Retour</a>";
+            exit;
+        }
+     }
 
       public function getPaginatedData(int $categoryId, int $currentPage = 1, int $limit = 10): array
             {
