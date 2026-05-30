@@ -1,4 +1,5 @@
 <?php
+session_start();
 //require_once __DIR__ . '/../../utils/session_init.php';
 require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
@@ -10,7 +11,16 @@ use App\Controller\UsersController;
 $usersRepository = new UsersRepository($bdd);
 $usersController = new UsersController($usersRepository);
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
+   if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])){
+        die('CSRF token invalid');
+    }
+    unset($_SESSION['csrf_token']);
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     $usersController->register();
 } 
 ?>
@@ -36,6 +46,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="post" action="">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" required>

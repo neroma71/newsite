@@ -97,6 +97,12 @@ $homes = $homeRepository->findAll();
             <article class="actu-item">
                 <h2><?= htmlspecialchars($actu->getTitle()) ?></h2>
                 <p class="date"> posté le <?= $actu->getCreatedAt()->format('d/m/Y à H:i') ?> h</p>
+                  <?php if ($actu->getImage()): ?>
+                    <!-- Affichage de l'image tronquée uniquement décoratif -->
+                    <div class="actu-header">
+                        <img src="/newsite/public/uploads/<?= htmlspecialchars($actu->getImage()) ?>" alt="Image de l'actualité">
+                    </div>
+                <?php endif; ?>
                   <div class="actu-content">
                     <?= $actu->getContent(); ?>
                 </div>

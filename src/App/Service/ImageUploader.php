@@ -90,7 +90,7 @@ class ImageUploader
                 'path' => '/uploads/' . $filename, 
             ];
     }
-
+        // Methode pour upload les images d'un article de la page actu avec plusieurs images
         public function uploadMultiple(array $files, array &$errors): array
         {
             $uploadedImages = [];

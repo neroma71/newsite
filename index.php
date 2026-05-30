@@ -20,7 +20,7 @@ $homeRepository = new HomeRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
 $youtubeService = new YoutubeEmbedService();
 
-$categoryController = new CategoryController($bdd, $categoryRepository, $articleRepository, $homeRepository);
+$categoryController = new CategoryController($bdd, $categoryRepository, $articleRepository);
 $articleController = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeService);
 
 $publicDir = realpath(__DIR__ . '/public');
@@ -53,6 +53,7 @@ if ($path === '/categories.php') {
     $categoryController->show();
     exit;
 }
+
 if ($path === '/article.php') {
     $articleController->show();
     exit;

@@ -1,3 +1,18 @@
+<?php
+/** @var \App\Entity\Articles $article */
+/** @var \App\Entity\Category[] $categories */
+/** @var int|null $prevId */
+/** @var int|null $nextId */
+/** @var int $categoryId */
+/**
+ * @phpstan-type SplitContent array{
+ *     text: string,
+ *     videos: string[]
+ * }
+ */
+
+/** @var SplitContent $splitContent */
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>

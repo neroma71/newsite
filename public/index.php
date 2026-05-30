@@ -71,7 +71,7 @@ $baseUrl = BASE_URL;
         <div class="categories">
             <?php foreach ($categories as $category): ?>
                 <a href="<?= $baseUrl ?>/categories.php?id=<?= htmlspecialchars($category->getId()); ?>" class="category-link">
-                    <div class="category" style="background:url(<?= $baseUrl ?>/uploads/<?= htmlspecialchars($category->getImage()) ?>) no-repeat; background-size:cover;">
+                    <div class="category" style="background:url('<?= $baseUrl ?>/uploads/<?= htmlspecialchars($category->getImage()) ?>') no-repeat; background-size:cover;">
                         <div class="overlay">
                             <h3><?= htmlspecialchars($category->getTitle()) ?></h3>
                             <p><?= htmlspecialchars($category->getDescription()) ?></p>

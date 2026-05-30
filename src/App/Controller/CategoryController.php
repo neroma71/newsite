@@ -8,14 +8,14 @@ use PDO;
 
 class CategoryController
 {
-    private PDO $db;
+    private PDO $bdd;
     private CategoryRepository $categoryRepository;
     private ArticleRepository $articleRepository;
 
 
-    public function __construct(PDO $db,CategoryRepository $categoryRepository, ArticleRepository $articleRepository)
+    public function __construct(PDO $bdd, CategoryRepository $categoryRepository, ArticleRepository $articleRepository)
     {
-        $this->db = $db;
+        $this->bdd = $bdd;
         $this->categoryRepository = $categoryRepository;
         $this->articleRepository = $articleRepository;
     }
@@ -133,7 +133,7 @@ class CategoryController
         $categorie = $this->categoryRepository->findById($categoryId);
 
         if (!$categorie) {
-            require __DIR__ . '/../../public/404.php';
+            require __DIR__ . '/../../../public/404.php';
             exit;
         }
 

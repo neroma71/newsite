@@ -30,9 +30,11 @@ class UsersController
             }
 
             // Si des erreurs sont présentes, les afficher dans la vue
+            // If any errors are present, display them in the view
             if (!empty($errors)) {
                 $_SESSION['errors'] = $errors;
                 // Pas besoin de require db_connect.php ni de global $bdd ici
+                // No need for require db_connect.php or global $bdd here
                 $usersRepository = $this->usersRepository;
                 $usersController = $this;
                 include __DIR__ . '/../../../views/users/login.php';
@@ -75,8 +77,10 @@ class UsersController
             $user = $this->usersRepository->findByEmail($email);
 
             if ($user && password_verify($password, $user->getPassword())) {
-                session_regenerate_id(true); //  protection contre fixation de session
-                $_SESSION['user_id'] = $user->getId(); //  Ne stocke que l'ID
+                //  protection contre fixation de session
+                session_regenerate_id(true); 
+                //  Ne stocke que l'ID de l'utilisateur dans la session pour éviter de stocker des données sensibles
+                $_SESSION['user_id'] = $user->getId(); 
          
                 header('Location: /newsite/views/manage/dashboard.php');
                 exit;

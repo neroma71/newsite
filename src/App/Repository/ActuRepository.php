@@ -24,7 +24,7 @@ class ActuRepository{
      *
      * @return  self
      */ 
-    public function setDb($db)
+    public function setDb(PDO $db): self
     {
         $this->db = $db;
 

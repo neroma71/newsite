@@ -66,6 +66,7 @@ class CategoryRepository {
         $category->setId($this->getDb()->lastInsertId());
         return $category;
     }
+
     public function updateCategory(Category $category): Category
     {
         $query = $this->getDb()->prepare('UPDATE category SET title = :title, description = :description, image = :image WHERE id = :id');
@@ -77,6 +78,7 @@ class CategoryRepository {
         
         return $category;
     }
+    
     public function deleteCategory(int $id): bool
     {
         $query = $this->getDb()->prepare('DELETE FROM category WHERE id = :id');

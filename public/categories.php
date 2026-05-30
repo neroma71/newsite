@@ -1,3 +1,12 @@
+<?php
+/** @var \App\Entity\Category $categorie */
+/** @var \App\Entity\Category[] $categories */
+/** @var \App\Entity\Articles[] $articles */
+/** @var int $currentPage */
+/** @var int $totalPages */
+/** @var int $categoryId */
+/** @var string $search */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,7 +59,7 @@
     </header>
     <!-- ... ton header ... -->
     <main>
-        <div class="category" style="background:url(<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($categorie->getImage()) ?>) no-repeat; background-size:cover;"></div>
+        <div class="category" style="background:url('<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($categorie->getImage()) ?>') no-repeat; background-size:cover;"></div>
         <?php if ($totalPages > 1): ?>
             <div class="pagination">
                 <ul>
