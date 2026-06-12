@@ -3,15 +3,21 @@ namespace App\Controller;
 
 use App\Entity\Actu;
 use App\Repository\ActuRepository;
+use App\Repository\CategoryRepository;
+use App\Repository\HomeRepository;
 use App\Service\ImageUploader;
 
-class ActuController
+class ActuController extends BaseController
 {
     private ActuRepository $actuRepository;
+    private HomeRepository $homeRepository;
+    private CategoryRepository $categoryRepository;
 
-    public function __construct(ActuRepository $actuRepository)
+    public function __construct(ActuRepository $actuRepository, HomeRepository $homeRepository, CategoryRepository $categoryRepository)
     {
         $this->actuRepository = $actuRepository;
+        $this->homeRepository = $homeRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function create()
@@ -118,4 +124,28 @@ class ActuController
             exit;
         }
     }
+
+    public function show(): void
+    {
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $limit = 5;
+        $offset = ($page - 1) * $limit;
+
+        $actus = $this->actuRepository->findAllPaginated($offset, $limit);
+
+        $totalActus = $this->actuRepository->countAll();
+        $totalPages = (int) ceil($totalActus / $limit);
+
+        $homes = $this->homeRepository->findAll();
+        $categories = $this->categoryRepository->findAll();
+
+        $this->render('actu.php', [
+            'actus' => $actus,
+            'homes' => $homes,
+            'categories' => $categories,
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+        ]);
+    }
+
 }

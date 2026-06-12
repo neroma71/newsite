@@ -15,10 +15,8 @@ $homeRepository = new HomeRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
 
 $controller = new CategoryController(
-    $bdd,
     $categoryRepository,
-    $articleRepository,
-    $homeRepository
+    $articleRepository
 );
 
 $controller->create();

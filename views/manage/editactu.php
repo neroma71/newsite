@@ -5,18 +5,22 @@ require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
 
-use App\Repository\ImageRepository;
+define('BASE_URL', '/newsite');
+
 use App\Repository\ActuRepository;
 use App\Controller\ActuController;
+use App\Repository\HomeRepository;
+use App\Repository\CategoryRepository;
 
 $csrfToken = $_SESSION['csrf_token'];
 
 // Récupération de l'ID de l'actualité à modifier
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;    
 $actuRepository = new ActuRepository($bdd);
-$imageRepository = new ImageRepository($bdd);
+$homeRepository = new HomeRepository($bdd);
+$categoryRepository = new CategoryRepository($bdd);
 
-$controller = new ActuController($actuRepository, $imageRepository);
+$controller = new ActuController($actuRepository, $homeRepository, $categoryRepository);
 $actu = $controller->update($id);
 ?>
 <!DOCTYPE html>
@@ -43,6 +47,18 @@ $actu = $controller->update($id);
                 <p><label for="content">Contenu :</label></p>
                 <textarea name="content" id="content" required><?= htmlspecialchars($actu->getContent()) ?></textarea>
             </div>
+            <div class="formdiv">
+                <p>Image actuelle :</p>
+                    <?php if ($actu->getImage()): ?>
+                        <img 
+                            src="<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($actu->getImage()) ?>" 
+                            alt="Image actuelle"
+                            style="max-width: 200px; height: auto;"
+                        >
+                    <?php else: ?>
+                        <p>Aucune image</p>
+                    <?php endif; ?>
+            </div>  
         <div class="formdiv">
                 <p><label for="image">Image (laisser vide pour conserver l'image actuelle) :</label></p>
                 <input type="file" name="image" id="image" accept="image/*">

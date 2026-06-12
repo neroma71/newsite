@@ -5,6 +5,7 @@ Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
 use App\Repository\HomeRepository;
 use App\Controller\HomeController;
+use App\Repository\CategoryRepository;
 
 // Gestion du cas où la taille du POST dépasse la limite PHP
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES)) {
@@ -12,7 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES)) {
 } else {
     // Connexion à la base de données via $bdd défini dans db_connect
    $homeRepository = new HomeRepository($bdd);
-   $controller = new HomeController($homeRepository);
+   $categoryRepository = new CategoryRepository($bdd);
+   $controller = new HomeController($homeRepository, $categoryRepository);
 
     $controller->create();
 }

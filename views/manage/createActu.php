@@ -5,11 +5,13 @@ Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
 
 use App\Repository\ActuRepository;
+use App\Repository\HomeRepository;
+use App\Repository\CategoryRepository;
 use App\Controller\ActuController;
 
 // Connexion à la base de données via $bdd défini dans db_connect
 $actuRepository = new ActuRepository($bdd);
-$controller = new ActuController($actuRepository);  
+$controller = new ActuController($actuRepository, new HomeRepository($bdd), new CategoryRepository($bdd));  
 
 $controller->create();
 

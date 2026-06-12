@@ -13,7 +13,6 @@ $imageRepository = new ImageRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
 
 $controller = new CategoryController(
-    $bdd,
     $categoryRepository,
     $articleRepository,
 );

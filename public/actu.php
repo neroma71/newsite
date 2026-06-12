@@ -1,31 +1,9 @@
 <?php
-require_once __DIR__.'/../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__.'/../utils/db_connect.php';
-require_once __DIR__.'/../utils/constants.php';
-
-use App\Repository\ActuRepository;
-use App\Repository\CategoryRepository;
-use App\Repository\HomeRepository;
-
-$actuRepository = new ActuRepository($bdd);
-$categoryRepository = new CategoryRepository($bdd);
-$homeRepository = new HomeRepository($bdd);
-
-// Configuration de la pagination
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$page = max(1, $page);
-$limit = 5;
-
-// Récupération des données paginées
-$offset = ($page - 1) * $limit;
-$actus = $actuRepository->findAllPaginated($offset, $limit);
-$totalActus = $actuRepository->countAll();
-$totalPages = ceil($totalActus / $limit);
-$currentPage = $page;
-
-$homes = $homeRepository->findAll();
-
+/** @var \App\Entity\Actu[] $actus */
+/** @var \App\Entity\Home|null $home */
+/** @var \App\Entity\Category[] $categories */
+/** @var int $totalPages */
+/** @var int $currentPage */
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -39,9 +17,9 @@ $homes = $homeRepository->findAll();
 <main>
     <header>
             <div id="logo">
-            <?php if ($homes[0]->getImage1()): ?>
-                <img src="<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($homes[0]->getImage1()) ?>" alt="Logo">
-            <?php endif; ?>     
+            <?php if (!empty($homes) && $homes[0]->getImage1()): ?>
+                <img src="<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($homes[0]->getImage1()) ?>">
+            <?php endif; ?>   
         </div>
            <h1>Actualités</h1>
          <nav>
@@ -52,9 +30,13 @@ $homes = $homeRepository->findAll();
                 <li>
                     <a class="nav-link" href="<?= BASE_URL ?>/index.php#categories">Galeries</a>
                     <ul class="dropdown">
-                        <?php foreach ($categoryRepository->findAll() as $category): ?>
-                            <li><a class="nav-link" href="<?= BASE_URL ?>/categories.php?id=<?= $category->getId(); ?>"><?= htmlspecialchars($category->getTitle()); ?></a></li>
-                        <?php endforeach; ?>
+                    <?php foreach ($categories as $category): ?>
+                        <li>
+                            <a href="<?= BASE_URL ?>/categories.php?id=<?= $category->getId(); ?>">
+                                <?= htmlspecialchars($category->getTitle()); ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
                     </ul>
                 </li>
             </ul>

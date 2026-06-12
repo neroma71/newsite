@@ -4,13 +4,16 @@ require_once __DIR__. '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__. '/../../utils/db_connect.php';
 
-use App\Repository\ImageRepository;
 use App\Repository\ActuRepository;
 use App\Controller\ActuController;
+use App\Repository\CategoryRepository;
+use App\Repository\HomeRepository;
 
-$imageRepository = new ImageRepository($bdd);
-$actuRepository = new ActuRepository($bdd, $imageRepository);
-$controller = new ActuController($actuRepository, $imageRepository);    
+
+$actuRepository = new ActuRepository($bdd);
+$homeRepository = new HomeRepository($bdd);
+$categoryRepository = new CategoryRepository($bdd);
+$controller = new ActuController($actuRepository, $homeRepository, $categoryRepository);
 $controller->delete((int)$_POST['delete_id']);
 
 $actus = $actuRepository->findAll();

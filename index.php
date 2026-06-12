@@ -9,10 +9,12 @@ require_once __DIR__ . '/utils/autoloader.php';
 use App\Controller\CategoryController;
 use App\Controller\ArticleController;
 use App\Controller\HomeController;
+use App\Controller\ActuController;
 use App\Repository\CategoryRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\ImageRepository;
 use App\Repository\HomeRepository;
+use App\Repository\ActuRepository;
 use App\Service\YoutubeEmbedService;
 
 /* =========================
@@ -22,7 +24,7 @@ use App\Service\YoutubeEmbedService;
 $homeRepository = new HomeRepository($bdd);
 $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
-
+$actuRepository = new ActuRepository($bdd);
 $articleRepository = new ArticleRepository(
     $bdd,
     $categoryRepository,
@@ -32,7 +34,8 @@ $articleRepository = new ArticleRepository(
 $youtubeService = new YoutubeEmbedService();
 
 $homeController = new HomeController($homeRepository, $categoryRepository);
-$categoryController = new CategoryController($bdd, $categoryRepository, $articleRepository);
+$categoryController = new CategoryController($categoryRepository, $articleRepository);
+$actuController = new ActuController($actuRepository, $homeRepository, $categoryRepository);
 $articleController = new ArticleController(
     $articleRepository,
     $imageRepository,
@@ -69,6 +72,8 @@ $routes = [
     '/categories.php' => fn() => $categoryController->show(),
 
     '/article.php' => fn() => $articleController->show(),
+
+    '/actu.php' => fn() => $actuController->show(),
 ];
 
 /* =========================

@@ -8,14 +8,12 @@ use PDO;
 
 class CategoryController extends BaseController
 {
-    private PDO $bdd;
     private CategoryRepository $categoryRepository;
     private ArticleRepository $articleRepository;
 
 
-    public function __construct(PDO $bdd, CategoryRepository $categoryRepository, ArticleRepository $articleRepository)
+    public function __construct(CategoryRepository $categoryRepository, ArticleRepository $articleRepository)
     {
-        $this->bdd = $bdd;
         $this->categoryRepository = $categoryRepository;
         $this->articleRepository = $articleRepository;
     }

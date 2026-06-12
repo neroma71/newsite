@@ -14,7 +14,6 @@ $articleRepository = new ArticleRepository($bdd, $categoryRepository, new ImageR
 
 
 $controller = new CategoryController(
-    $bdd,
     $categoryRepository,
     $articleRepository,
 );
