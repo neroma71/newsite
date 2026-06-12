@@ -3,7 +3,7 @@ un nouveau site
 
 ## Présentation
 Projet personnel de site web développé en PHP sans framework afin de comprendre en profondeur le fonctionnement du MVC, du routage, des repositories et de la gestion des données.
-Ce projet est en cours d'évolution et donc va encore changer.
+Ce projet est en cours d'évolution et va donc encore changer.
 
 ## Stack
 - PHP (POO)
