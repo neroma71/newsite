@@ -1,20 +1,7 @@
 <?php
-require_once __DIR__ . '/../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../utils/db_connect.php';
-require_once __DIR__ . '/../utils/constants.php';
-
-use App\Repository\HomeRepository;
-use App\Repository\CategoryRepository;
-
-$homeRepository = new HomeRepository($bdd);
-$categoryRepository = new CategoryRepository($bdd);
-
-$homes = $homeRepository->findAll();
-$categories = $categoryRepository->findAll();
-
-// Utiliser la constante BASE_URL au lieu d'une variable locale
-$baseUrl = BASE_URL;
+/** @var \App\Entity\Home[] $homes */
+/** @var \App\Entity\Category[] $categories */
+/** @var string $baseUrl */
 ?>
 <!DOCTYPE html>
 <html lang="fr">

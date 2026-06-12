@@ -30,7 +30,7 @@
              *
              * @return  self
              */ 
-            public function setDb($db): self
+            public function setDb(PDO $db): self
             {
                 $this->db = $db;
 

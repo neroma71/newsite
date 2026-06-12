@@ -1,72 +1,97 @@
 <?php
+
 require_once __DIR__ . '/utils/constants.php';
 require_once __DIR__ . '/utils/db_connect.php';
 require_once __DIR__ . '/utils/autoloader.php';
 
+\Autoloader::register();
+
 use App\Controller\CategoryController;
 use App\Controller\ArticleController;
+use App\Controller\HomeController;
 use App\Repository\CategoryRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\ImageRepository;
 use App\Repository\HomeRepository;
 use App\Service\YoutubeEmbedService;
 
+/* =========================
+   BOOTSTRAP DEPENDENCIES
+========================= */
 
-\Autoloader::register();
-
+$homeRepository = new HomeRepository($bdd);
 $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
-$homeRepository = new HomeRepository($bdd);
-$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
+
+$articleRepository = new ArticleRepository(
+    $bdd,
+    $categoryRepository,
+    $imageRepository
+);
+
 $youtubeService = new YoutubeEmbedService();
 
+$homeController = new HomeController($homeRepository, $categoryRepository);
 $categoryController = new CategoryController($bdd, $categoryRepository, $articleRepository);
-$articleController = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeService);
+$articleController = new ArticleController(
+    $articleRepository,
+    $imageRepository,
+    $categoryRepository,
+    $youtubeService
+);
 
-$publicDir = realpath(__DIR__ . '/public');
+/* =========================
+   REQUEST PARSING
+========================= */
+
 $requestUri = $_SERVER['REQUEST_URI'];
 $path = rawurldecode(parse_url($requestUri, PHP_URL_PATH) ?? '/');
 
-// Retire le préfixe BASE_URL si présent (ex: /newsite)
-if (defined('BASE_URL') && BASE_URL !== '' && strpos($path, BASE_URL) === 0) {
+// BASE_URL support
+if (defined('BASE_URL') && BASE_URL !== '' && str_starts_with($path, BASE_URL)) {
     $path = substr($path, strlen(BASE_URL));
-    if ($path === '') {
-        $path = '/';
-    }
 }
 
-// Retire un éventuel préfixe /public dans l'URL
-$path = preg_replace('~^/public~', '', $path);
-
-// Normaliser
+// normalize
+$path = rtrim($path, '/');
 if ($path === '') {
     $path = '/';
 }
 
-// Si racine -> servir public/index.php
-if ($path === '/' || $path === '/index.php') {
-    require $publicDir . '/index.php';
+/* =========================
+   ROUTES
+========================= */
+
+$routes = [
+    '/' => fn() => $homeController->show(),
+    '/index.php' => fn() => $homeController->show(),
+
+    '/categories.php' => fn() => $categoryController->show(),
+
+    '/article.php' => fn() => $articleController->show(),
+];
+
+/* =========================
+   DISPATCH ROUTER
+========================= */
+
+if (isset($routes[$path])) {
+    $routes[$path]();
     exit;
 }
 
-if ($path === '/categories.php') {
-    $categoryController->show();
-    exit;
-}
+/* =========================
+   STATIC FILES HANDLER
+========================= */
 
-if ($path === '/article.php') {
-    $articleController->show();
-    exit;
-}
-// Construit chemin réel dans /public
+$publicDir = realpath(__DIR__ . '/public');
 $target = $publicDir . $path;
 $real = realpath($target);
 
-// Vérifie que le fichier demandé est bien dans le dossier public
-if ($real && strpos($real, $publicDir) === 0 && is_file($real)) {
+if ($real && str_starts_with($real, $publicDir) && is_file($real)) {
+
     $ext = strtolower(pathinfo($real, PATHINFO_EXTENSION));
 
-    // Fichiers statiques : servir directement avec bon Content-Type
     $mimeTypes = [
         'css'  => 'text/css',
         'js'   => 'application/javascript',
@@ -88,19 +113,20 @@ if ($real && strpos($real, $publicDir) === 0 && is_file($real)) {
         exit;
     }
 
-    // Fichiers PHP : exécuter
     if ($ext === 'php') {
         require $real;
         exit;
     }
 
-    // Autres fichiers : force le téléchargement / affichage binaire
     header('Content-Type: application/octet-stream');
     readfile($real);
     exit;
 }
 
-// Si rien ne correspond -> 404
-header("HTTP/1.0 404 Not Found");
+/* =========================
+   404
+========================= */
+
+http_response_code(404);
 echo "404 Not Found";
 exit;

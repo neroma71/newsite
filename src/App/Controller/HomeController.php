@@ -4,15 +4,18 @@ namespace App\Controller;
 use App\Entity\Home;
 use App\Repository\HomeRepository;
 use App\Service\ImageUploader;
+use App\Repository\CategoryRepository;
 
 
 class HomeController
 {
     private HomeRepository $homeRepository;
+    private CategoryRepository $categoryRepository;
 
-    public function __construct(HomeRepository $homeRepository)
+    public function __construct(HomeRepository $homeRepository, CategoryRepository $categoryRepository)
     {
         $this->homeRepository = $homeRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function create()
@@ -161,7 +164,10 @@ class HomeController
 
     public function show()
     {   
-        $home = $this->homeRepository->findAll();
+        $homes = $this->homeRepository->findAll();
+        $categories = $this->categoryRepository->findAll();
+
+         $baseUrl = BASE_URL;
         require __DIR__ . '/../../../public/index.php';
     }
 
