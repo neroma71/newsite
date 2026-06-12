@@ -8,7 +8,7 @@ use App\Repository\ImageRepository;
 use App\Repository\CategoryRepository;
 use App\Service\YoutubeEmbedService;
 
-class ArticleController
+class ArticleController extends BaseController
 {
     private ArticleRepository $articleRepository;
     private ImageRepository $imageRepository;
@@ -287,11 +287,5 @@ class ArticleController
                     'splitContent' => $splitContent,
                 ]);
             }
-
-     private function render(string $view, array $data = []): void
-    {
-            extract($data);
-            require __DIR__ . '/../../../public/' . $view;
-    }
     
 }

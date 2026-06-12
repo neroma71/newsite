@@ -6,7 +6,7 @@ use App\Service\ImageUploader;
 use App\Repository\ArticleRepository;
 use PDO;
 
-class CategoryController
+class CategoryController extends BaseController
 {
     private PDO $bdd;
     private CategoryRepository $categoryRepository;
@@ -150,6 +150,15 @@ class CategoryController
             $currentPage = $pagination['currentPage'];
         }
 
-        require __DIR__ . '/../../../public/categories.php';
+        $this->render('categories.php', [
+        'categories'   => $categories,
+        'categorie'    => $categorie,
+        'articles'     => $articles,
+        'totalPages'   => $totalPages,
+        'currentPage'  => $currentPage,
+        'search'       => $search,
+        'pagination'   => $pagination,
+        'categoryId'   => $categoryId,
+    ]);
     }
 }

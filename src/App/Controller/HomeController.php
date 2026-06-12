@@ -7,7 +7,7 @@ use App\Service\ImageUploader;
 use App\Repository\CategoryRepository;
 
 
-class HomeController
+class HomeController extends BaseController
 {
     private HomeRepository $homeRepository;
     private CategoryRepository $categoryRepository;
@@ -162,13 +162,13 @@ class HomeController
             exit;
         }
 
-    public function show()
-    {   
-        $homes = $this->homeRepository->findAll();
-        $categories = $this->categoryRepository->findAll();
-
-         $baseUrl = BASE_URL;
-        require __DIR__ . '/../../../public/index.php';
-    }
+    public function show(): void
+{
+    $this->render('index.php', [
+        'homes' => $this->homeRepository->findAll(),
+        'categories' => $this->categoryRepository->findAll(),
+        'baseUrl' => BASE_URL
+    ]);
+}
 
 }
