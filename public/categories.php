@@ -17,13 +17,13 @@
 </head>
 <body>
      <div class="search-form">
-            <form method="GET">
-    <input type="hidden" name="id" value="<?= $categoryId ?>">
-    <input type="text" name="search"
-           value="<?= htmlspecialchars($search ?? '') ?>"
-           placeholder="Rechercher">
-    <button type="submit"></button>
-</form>
+    <form method="GET">
+        <input type="hidden" name="id" value="<?= $categoryId ?>">
+        <input type="text" name="search"
+            value="<?= htmlspecialchars($search ?? '') ?>"
+            placeholder="Rechercher">
+        <button type="submit"></button>
+    </form>
         </div>
     <header>
         <a href="<?= BASE_URL ?>">

@@ -55,6 +55,7 @@ header{
       margin: 0 5px; 
 }
     nav ul li a {
+        position:relative;
       display: inline-block;
       width: 120px;  
       height: 40px;
@@ -65,6 +66,7 @@ header{
       line-height: 40px;
       position: relative;
       overflow: hidden;
+      z-index:10;
 }
     nav ul li a::before {
       content: "";
@@ -79,13 +81,13 @@ header{
       transition: transform 0.25s ease-in-out;
       transform-origin: left;
 }
-    nav ul li a.hover-right::before {
-      transform-origin: left;
-      transform: scaleX(1);
+nav ul li a.hover-right::before {
+    transform-origin: left;
+    transform: scaleX(1);
 }
-    nav ul li a.hover-left::before {
-      transform-origin: right;
-      transform: scaleX(1);
+nav ul li a.hover-left::before {
+    transform-origin: right;
+    transform: scaleX(1);
 }
 #logo{
     position:fixed;

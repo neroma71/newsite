@@ -242,50 +242,51 @@ class ArticleController extends BaseController
                 ];
             }
 
-
-            public function show(): void
+       private function abort404(): void
             {
-                $id = (int) ($_GET['id'] ?? 0);
-                $categoryId = isset($_GET['category']) ? (int) $_GET['category'] : null;
-
-                if ($id <= 0) {
-                    header('Location: /');
-                    exit;
-                }
-
-                $article = $this->articleRepository->findById($id);
-
-                if (!$article) {
-                    header('Location: /');
-                    exit;
-                }
-
-                $categories = $this->categoryRepository->findAll();
-
-                if (!$categoryId || !$this->categoryRepository->findById($categoryId)) {
-                    $categoryId = $article->getCategoryId();
-                }
-
-                $categorie = $this->categoryRepository->findById($categoryId);
-
-                if (!$categorie) {
-                    header('Location: /');
-                    exit;
-                }
-
-                $splitContent = $this->youtubeEmbedService->extract($article->getContent());
-
-                $prevNext = $this->articleRepository->findPrevNext($id, $categoryId);
-
-                $this->render('article.php', [
-                    'article' => $article,
-                    'categories' => $categories,
-                    'categorie' => $categorie,
-                    'categoryId' => $categoryId,
-                    'prevId' => $prevNext['prev'],
-                    'nextId' => $prevNext['next'],
-                    'splitContent' => $splitContent,
-                ]);
+            http_response_code(404);
+            require PUBLIC_PATH . '/404.php';
+            exit;
             }
-    
+
+      public function show(): void
+        {
+            if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
+                 $this->abort404();
+            }
+
+            $id = (int) $_GET['id'];
+
+            $article = $this->articleRepository->findById($id);
+
+            if (!$article) {
+                 $this->abort404();
+            }
+
+            $categoryId = isset($_GET['category']) && ctype_digit($_GET['category'])
+                ? (int) $_GET['category']
+                : $article->getCategoryId();
+
+            $categorie = $this->categoryRepository->findById($categoryId);
+
+            if (!$categorie) {
+                 $this->abort404();
+            }
+
+            $categories = $this->categoryRepository->findAll();
+
+            $splitContent = $this->youtubeEmbedService->extract($article->getContent());
+
+            $prevNext = $this->articleRepository->findPrevNext($id, $categoryId);
+
+            $this->render('article.php', [
+                'article' => $article,
+                'categories' => $categories,
+                'categorie' => $categorie,
+                'categoryId' => $categoryId,
+                'prevId' => $prevNext['prev'],
+                'nextId' => $prevNext['next'],
+                'splitContent' => $splitContent,
+            ]);
+        }
 }

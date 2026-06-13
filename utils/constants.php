@@ -1,3 +1,3 @@
 <?php
 define('BASE_URL', '/newsite');
-// C'est suffisant car c'est la seule constante réellement utilisée dans le projet
+define('PUBLIC_PATH', __DIR__ . '/../public');

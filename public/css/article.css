@@ -65,7 +65,6 @@ nav .dropdown{
     top:40px;
     right:0;
     height:auto;
-    z-index:100;
 }
 .dropdown li{
     height:40px;

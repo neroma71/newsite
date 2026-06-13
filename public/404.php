@@ -7,7 +7,7 @@
 </head>
 <body>
     <p>
-        Oups, la page que vous recherchez n'existe pas. <a href="/index.php">Retour à l'accueil</a> 
+        Oups, la page que vous recherchez n'existe pas. <a href="<?= BASE_URL ?>/index.php">Retour à l'accueil</a> 
     </p>
 </body>
 </html>

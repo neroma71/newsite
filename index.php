@@ -129,5 +129,5 @@ if ($real && str_starts_with($real, $publicDir) && is_file($real)) {
 ========================= */
 
 http_response_code(404);
-echo "404 Not Found";
+require __DIR__ . '/public/404.php';
 exit;
