@@ -18,18 +18,14 @@ use App\Repository\ActuRepository;
 use App\Service\YoutubeEmbedService;
 
 /* =========================
-   BOOTSTRAP DEPENDENCIES
+   dépendances
 ========================= */
 
 $homeRepository = new HomeRepository($bdd);
 $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
 $actuRepository = new ActuRepository($bdd);
-$articleRepository = new ArticleRepository(
-    $bdd,
-    $categoryRepository,
-    $imageRepository
-);
+$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
 
 $youtubeService = new YoutubeEmbedService();
 
@@ -44,7 +40,7 @@ $articleController = new ArticleController(
 );
 
 /* =========================
-   REQUEST PARSING
+   parsing de l'URL
 ========================= */
 
 $requestUri = $_SERVER['REQUEST_URI'];
@@ -62,7 +58,7 @@ if ($path === '') {
 }
 
 /* =========================
-   ROUTES
+   routes
 ========================= */
 
 $routes = [
@@ -77,7 +73,7 @@ $routes = [
 ];
 
 /* =========================
-   DISPATCH ROUTER
+  dispatcher
 ========================= */
 
 if (isset($routes[$path])) {
@@ -86,7 +82,7 @@ if (isset($routes[$path])) {
 }
 
 /* =========================
-   STATIC FILES HANDLER
+   fichiers statiques
 ========================= */
 
 $publicDir = realpath(__DIR__ . '/public');

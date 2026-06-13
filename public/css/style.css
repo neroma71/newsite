@@ -169,7 +169,7 @@ h1{
     backdrop-filter : blur(10px);
     -webkit-backdrop-filter : blur(10px);
     margin:10px auto;
-    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    clip-path: polygon(50% 100%, 0 30%, 100% 30%);
     }
 .zoom{
   position: absolute;
@@ -245,7 +245,7 @@ h1{
 }
 .category-link{
     text-decoration:none;
-    color:#3d3c3d;
+    color:white;
 }
 .category{
     width:300px;
@@ -374,4 +374,13 @@ footer{
     height:100px;
     margin-top:50px;
     background-color:#1d1c1d;
+}
+@media screen and (max-width: 768px) {
+    #title h1{
+        top:50px;
+        font-size:70px;
+    }
+    #title h2{
+        font-size:40px;
+    }
 }

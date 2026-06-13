@@ -15,15 +15,7 @@
 <main>
 <?php foreach ($homes as $home): ?>
     <header>
-        <nav>
-            <ul>
-                <li><a href="#accueil">Accueil</a></li>
-                <li><a href="#description">À propos</a></li>
-                <li><a href="#categories">Galeries</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="<?= $baseUrl ?>/actu.php">Actus</a></li>
-            </ul>
-        </nav>
+        <?php include __DIR__ . '/../partials/menu.php'; ?>
     </header>
 
     <div id="logo">
