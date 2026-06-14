@@ -32,13 +32,13 @@ if (!$user) {
             <p>Voici votre tableau de bord où vous pouvez gérer vos activités.</p>
                 <div class="actions">
                     <div class="action-card">
-                        <a href="manager.php">Gérer l'accueil</a>
+                        <a href="homeManager.php">Gérer l'accueil</a>
                     </div>  
                     <div class="action-card">
                         <a href="category.php">Gérer les catégories</a>
                     </div>  
                     <div class="action-card">
-                        <a href="articlemanager.php">Gérer les articles</a>
+                        <a href="articleManager.php">Gérer les articles</a>
                     </div>
                     <div class="action-card">
                         <a href="actumanager.php">Gérer les actus</a>

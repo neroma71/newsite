@@ -172,7 +172,7 @@ class ArticleController extends BaseController
                 // sauvegarde de l'update de l'article
                 $this->articleRepository->updateArticle($article);
 
-                header('Location: ./articlemanager.php');
+                header('Location: ./articleManager.php');
                 exit;
             }
         }
@@ -214,7 +214,7 @@ class ArticleController extends BaseController
             // 2. supprimer article
             $this->articleRepository->deleteArticle($id);
 
-            header('Location: /newsite/views/manage/articlemanager.php');
+            header('Location: /newsite/views/manage/articleManager.php');
             exit;
 
         } catch (\Exception $e) {

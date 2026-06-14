@@ -54,6 +54,7 @@ if ($path === '') {
 
 //routes
 $routes = [
+    //front office
     '/' => fn() => $homeController->show(),
     '/index.php' => fn() => $homeController->show(),
 
@@ -62,6 +63,8 @@ $routes = [
     '/article.php' => fn() => $articleController->show(),
 
     '/actu.php' => fn() => $actuController->show(),
+
+    //back office
 ];
 
   //dispatcher

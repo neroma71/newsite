@@ -139,7 +139,7 @@ class HomeController extends BaseController
             // Sauvegarde en BDD
         $this->homeRepository->updateHome($home);
         // Redirection
-        header('Location: /newsite/views/manage/manager.php');
+        header('Location: /newsite/views/manage/homeManager.php');
         exit;
         }
     }
@@ -158,7 +158,7 @@ class HomeController extends BaseController
             }
 
             $this->homeRepository->deleteHome($id);
-            header('Location: manager.php');
+            header('Location: homeManager.php');
             exit;
         }
 
