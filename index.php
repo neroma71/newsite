@@ -17,9 +17,7 @@ use App\Repository\HomeRepository;
 use App\Repository\ActuRepository;
 use App\Service\YoutubeEmbedService;
 
-/* =========================
-   dépendances
-========================= */
+//dépendances des controllers, repositories et services
 
 $homeRepository = new HomeRepository($bdd);
 $categoryRepository = new CategoryRepository($bdd);
@@ -39,10 +37,7 @@ $articleController = new ArticleController(
     $youtubeService
 );
 
-/* =========================
-   parsing de l'URL
-========================= */
-
+  //parsing de l'URL
 $requestUri = $_SERVER['REQUEST_URI'];
 $path = rawurldecode(parse_url($requestUri, PHP_URL_PATH) ?? '/');
 
@@ -51,16 +46,13 @@ if (defined('BASE_URL') && BASE_URL !== '' && str_starts_with($path, BASE_URL)) 
     $path = substr($path, strlen(BASE_URL));
 }
 
-// normalize
+// normalise
 $path = rtrim($path, '/');
 if ($path === '') {
     $path = '/';
 }
 
-/* =========================
-   routes
-========================= */
-
+//routes
 $routes = [
     '/' => fn() => $homeController->show(),
     '/index.php' => fn() => $homeController->show(),
@@ -72,19 +64,15 @@ $routes = [
     '/actu.php' => fn() => $actuController->show(),
 ];
 
-/* =========================
-  dispatcher
-========================= */
+  //dispatcher
 
 if (isset($routes[$path])) {
     $routes[$path]();
     exit;
 }
 
-/* =========================
-   fichiers statiques
-========================= */
 
+  // fichiers statiques
 $publicDir = realpath(__DIR__ . '/public');
 $target = $publicDir . $path;
 $real = realpath($target);
@@ -124,10 +112,8 @@ if ($real && str_starts_with($real, $publicDir) && is_file($real)) {
     exit;
 }
 
-/* =========================
-   404
-========================= */
 
+//404
 http_response_code(404);
 require __DIR__ . '/public/404.php';
 exit;

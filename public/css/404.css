@@ -9,8 +9,8 @@ body{
     width: 100%;
     margin:0;
     padding:0;
-    background:rgb(210, 210, 210);
-}
+    background:rgb(204, 204, 204);
+} 
 .error-container{
     position:relative;
     top:10%;
@@ -22,10 +22,13 @@ body{
     text-align: center;
 }
 h1{
+    position:relative;
+    top:70px;
     font-size: 5rem;
     color:white;
 }
 h2{
+    font-weight:100;
     font-size: 2rem;
     color: white;
 } 

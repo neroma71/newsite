@@ -24,7 +24,7 @@ class CategoryRepository {
      *
      * @return  self
      */ 
-    public function setDb($db)
+    public function setDb(PDO $db)
     {
         $this->db = $db;
 
@@ -55,6 +55,7 @@ class CategoryRepository {
         
         return null;
     }
+    
     public function createCategory(Category $category): Category
     {
         $query = $this->getDb()->prepare('INSERT INTO category (title, description, image) VALUES (:title, :description, :image)');

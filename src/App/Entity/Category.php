@@ -94,21 +94,13 @@ class Category{
         return $this;
     }
 
-    public function hydrate(array $data): self
-    {
-        if (isset($data['id'])) {
-            $this->setId($data['id']);
+    public function hydrate(array $data) {
+        foreach ($data as $key => $value) {
+            $method = 'set'.ucfirst($key); 
+            if (method_exists($this, $method)) {
+            $this->$method($value);
+            }
         }
-        if (isset($data['title'])) {
-            $this->setTitle($data['title']);
-        }
-        if (isset($data['description'])) {
-            $this->setDescription($data['description']);
-        }
-        if (isset($data['image'])) {
-            $this->setImage($data['image']);
-        }
-
-        return $this;
     }
+
 }
