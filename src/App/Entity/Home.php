@@ -179,29 +179,17 @@ class Home
 
     public function hydrate(array $data): void
     {
-        if (isset($data['id'])) {
-            $this->setId($data['id']);
-        }
-        if (isset($data['title'])) {
-            $this->setTitle($data['title']);
-        }
-        if (isset($data['subtitle'])) {
-            $this->setSubtitle($data['subtitle']);
-        }
-        if (isset($data['description'])) {
-            $this->setDescription($data['description']);
-        }
-        if (isset($data['image1'])) {
-            $this->setImage1($data['image1']);
-        }
-        if (isset($data['image2'])) {
-            $this->setImage2($data['image2']);
-        }
-        if (isset($data['image3'])) {
-            $this->setImage3($data['image3']);
-        }
-        if (isset($data['image4'])) {
-            $this->setImage4($data['image4']);
+        foreach ($data as $key => $value) {
+
+            // 1. snake_case → camelCase
+            $camelKey = lcfirst(str_replace('_', '', ucwords($key, '_')));
+
+            // 2. setter final
+            $method = 'set' . ucfirst($camelKey);
+
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+            }
         }
     }
 }

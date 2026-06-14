@@ -60,8 +60,8 @@ class HomeController extends BaseController
             ]);
             $this->homeRepository->createHome($home);
             // Redirection après traitement
-            header('Location: /newsite/public/index.php');
-            exit;
+             header('Location: ../../views/manage/dashboard.php');
+             exit;
         }
     }
 
