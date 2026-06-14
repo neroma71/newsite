@@ -26,7 +26,8 @@ Le projet est basé sur une architecture MVC simplifiée :
 - Controllers : logique métier
 - Repositories : accès base de données
 - Entities : objets métier
-- Views : affichage
+- Views : affichage des dossier cachés
+- Public affichage des vue front
 - Services : logique réutilisable (upload, embed YouTube)
 - Router : gestion des routes
 
