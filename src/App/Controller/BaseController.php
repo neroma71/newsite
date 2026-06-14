@@ -6,7 +6,7 @@ abstract class BaseController
 {
     protected function render(string $view, array $data = []): void
     {
-        $viewFile = __DIR__ . '/../../../public/' . $view;
+        $viewFile = __DIR__ . '/../../../views/front/' . $view;
 
         if (!file_exists($viewFile)) {
             throw new \Exception("View not found: $view");

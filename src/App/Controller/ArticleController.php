@@ -245,7 +245,7 @@ class ArticleController extends BaseController
        private function abort404(): void
             {
             http_response_code(404);
-            require PUBLIC_PATH . '/404.php';
+            require VIEW_PATH . '/front/404.php';
             exit;
             }
 

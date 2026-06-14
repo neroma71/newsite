@@ -131,7 +131,7 @@ class CategoryController extends BaseController
         $categorie = $this->categoryRepository->findById($categoryId);
 
         if (!$categorie) {
-            require __DIR__ . '/../../../public/404.php';
+            require VIEW_PATH . '/front/404.php';
             exit;
         }
 
