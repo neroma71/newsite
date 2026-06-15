@@ -6,6 +6,13 @@ let title = document.querySelector('h1');
 const slidingTitles = document.querySelectorAll('.slidingTitle');
 const image = document.querySelector('.zoom');
 const nav = document.querySelectorAll('nav ul li a');
+let rmenu = document.querySelector('.rmenu');
+let close = document.querySelector('.close');
+
+// menu responsive
+ close.addEventListener('click', ()=>{
+       rmenu.classList.toggle('navbar_open');
+  });
 
 // smooth scroll pour les liens d'ancre
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {

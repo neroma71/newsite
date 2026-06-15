@@ -1,4 +1,4 @@
- <nav>
+ <nav class="menu">
             <ul>
                 <li><a href="#accueil">Accueil</a></li>
                 <li><a href="#description">À propos</a></li>

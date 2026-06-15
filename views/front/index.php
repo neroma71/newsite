@@ -16,6 +16,7 @@
 <?php foreach ($homes as $home): ?>
     <header>
         <?php include __DIR__ . './../../partials/menu.php'; ?>
+        <?php include __DIR__ . './../../partials/responsivemenu.php'; ?>
     </header>
 
     <div id="logo">

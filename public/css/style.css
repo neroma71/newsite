@@ -15,7 +15,7 @@ body{
     overflow-x: hidden;
 }
 main{
-    width:100%;
+    width:100vw;
     min-height:100vh;
     display:flex;
     flex-direction:column;
@@ -88,6 +88,9 @@ nav ul li a.hover-right::before {
 nav ul li a.hover-left::before {
     transform-origin: right;
     transform: scaleX(1);
+}
+.rmenu{
+    display:none;
 }
 #logo{
     position:fixed;
@@ -384,5 +387,90 @@ footer{
     }
     #title h2{
         font-size:40px;
+    }
+    .menu{
+        display:none;
+    }
+    .rmenu{
+        position:relative;
+        display:block;
+        width:200px;
+        height:100vh;
+        top:-10px;
+        left:100vw;
+        background:rgba(255, 255, 255, 0.3);
+        backdrop-filter : blur(10px);
+        -webkit-backdrop-filter : blur(10px); 
+        z-index:200;
+        transition:all 0.3s linear;
+    }
+     .navbar_open{
+        position:relative;
+        top:-10px;
+        left:calc(100vw - 230px);
+        width:200px;
+        z-index:250;
+    }
+     .close{
+        position:relative;
+        height:40px;
+        width:40px;
+        right:100px;
+        top:0px;
+        z-index:200;
+        cursor:pointer;
+    }
+     .navbar_open .close{
+        right:40px;
+    }
+    #line1{
+        position:absolute;
+        height:2px;
+        width:40px;
+        top:50%;
+        background:white;
+        transition:all 0.2s ease-in-out;
+    }
+    #line1::before, #line1::after{
+        content: "";
+        position:absolute;
+        width:40px;
+        height:2px;
+        background:white;
+        transition:transform 0.3s ease-in-out;
+    }
+    #line1::before{
+        transform:translateY(-10px);
+    }
+    #line1::after{
+        transform:translateY(10px);
+    }
+    .navbar_open #line1{
+       background-color:transparent;
+       border-bottom:2px solid transparent;
+    }
+    .navbar_open #line1::before{
+       transform: translateY(0px) rotateZ(45deg);
+     }
+    .navbar_open #line1::after{
+        transform: translateY(0px) rotateZ(-45deg);
+      }
+    .rmenu ul{
+        list-style-type:none;
+        margin:0;
+        padding:0;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+    }
+    .rmenu ul li{
+        height:40px;
+        width:200px;
+        border-bottom:1px solid white;
+    }
+    .rmenu ul li a{
+        height:40px;
+        width:200px;
     }
 }

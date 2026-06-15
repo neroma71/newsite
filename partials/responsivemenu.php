@@ -1,4 +1,7 @@
- <nav>
+ <nav id="rmenu" class="rmenu">
+    <div class="close">
+		<div class="line" id="line1"></div>
+	</div>
             <ul>
                 <li><a href="#accueil">Accueil</a></li>
                 <li><a href="#description">À propos</a></li>
