@@ -39,8 +39,10 @@ $categories = $categoryRepository->findAll();
         <link rel="stylesheet" href="css/manager.css">
 </head>
 <body>
+      <header>
+            <p>Gestion des catégories</p>
+        </header>
     <div class="container">
-        <h1>Gestion des catégories</h1>
         <p><a href="createCategory.php" class="btn btn-primary">Créer une catégorie</a></p>
         <table class="table mt-5">
             <thead>

@@ -32,7 +32,9 @@ $home = $id ? $homeRepository->findById($id) : null;
         <link rel="stylesheet" href="css/manager.css">
     </head>
 <body>
-<h2>Modifier l'accueil</h2>
+<header>
+        <p>Modifier l'accueil</p>
+</header>
 <?php if ($home): ?>
 <div class="container">
             <?php if (!empty($errors)): ?>

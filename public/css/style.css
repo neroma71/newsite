@@ -30,7 +30,10 @@ header{
     z-index:100;
     transition:all 0.3s linear;
 }
-    nav {
+.rmenu{
+    display:none;
+}
+nav {
       position: fixed;
       height: 40px;
       width: 100vw;
@@ -42,7 +45,7 @@ header{
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
       border-bottom: 1px solid rgba(255, 255, 255, 0.22);
 }  
-    nav ul {
+ nav ul {
       height: 40px;
       display: flex;
       justify-content: right;
@@ -88,9 +91,6 @@ nav ul li a.hover-right::before {
 nav ul li a.hover-left::before {
     transform-origin: right;
     transform: scaleX(1);
-}
-.rmenu{
-    display:none;
 }
 #logo{
     position:fixed;
@@ -396,7 +396,7 @@ footer{
         display:block;
         width:200px;
         height:100vh;
-        top:-10px;
+        top:-40px;
         left:100vw;
         background:rgba(255, 255, 255, 0.3);
         backdrop-filter : blur(10px);
@@ -406,7 +406,7 @@ footer{
     }
      .navbar_open{
         position:relative;
-        top:-10px;
+        top:-40px;
         left:calc(100vw - 230px);
         width:200px;
         z-index:250;
@@ -416,7 +416,7 @@ footer{
         height:40px;
         width:40px;
         right:100px;
-        top:0px;
+        top:40px;
         z-index:200;
         cursor:pointer;
     }
@@ -456,13 +456,11 @@ footer{
         transform: translateY(0px) rotateZ(-45deg);
       }
     .rmenu ul{
+        display:block;
         list-style-type:none;
         margin:0;
         padding:0;
-        display:flex;
-        flex-direction:column;
-        justify-content:center;
-        align-items:center;
+     
     }
     .rmenu ul li{
         height:40px;

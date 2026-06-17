@@ -35,7 +35,9 @@ $category = $id ? $categoryRepository->findById($id) : null;
         <link rel="stylesheet" href="css/manager.css">
 </head>
   <body>
-    <h2>Créer une catégorie</h2>
+<header>
+    <p>Créer une catégorie</p>
+</header>
     <div class="container">
     <form method="post" enctype="multipart/form-data" action="">
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

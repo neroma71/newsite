@@ -23,13 +23,19 @@ header{
   z-index:100;
 }
 header h2{
+  position:fixed;
+  top:20px;
+  left:50px;
+  font-size:40px;
   font-family:Helvetica, sans-serif;
   color:grey;
 }
 header p{
   position:fixed;
   font-size:40px;
-  left:50px;
+  left:50%;
+  top:50px;
+  transform:translateX(-50%);
 }
 nav{
   position:fixed;
@@ -63,7 +69,7 @@ nav ul li a{
   text-decoration:none;
 }
 .container{
-  margin-top:120px;
+  margin-top:150px;
 }
 .image-grid{
   display:flex;
@@ -81,6 +87,13 @@ nav ul li a{
 .image-item{
  width:300px;
  height:300px;
+  margin:5px;
+  padding:5px;
+  border:1px solid lightgray;
+}
+.image-item-home{
+ width:300px;
+ height:200px;
   margin:5px;
   padding:5px;
   border:1px solid lightgray;
