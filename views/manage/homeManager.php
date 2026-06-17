@@ -30,8 +30,10 @@ $homes = $homeRepository->findAll();
     <link rel="stylesheet" href="css/manager.css">
 </head>
 <body>
+    <header>
+        <p>Gestion de la page d'accueil</p>
+    </header>
 <div class="container">
-    <h1>Gestion de la pages d'accueil</h1>
     <p><a href="createHome.php" class="btn btn-primary">Créer l'accueil</a></p>
 <table class="table mt-5">
     <thead>
