@@ -1,28 +1,3 @@
-<?php
-require_once __DIR__ . '/../../utils/session_init.php';
-
-require_once __DIR__ . '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../../utils/db_connect.php';
-
-define('BASE_URL', '/newsite');
-
-use App\Repository\ActuRepository;
-use App\Controller\ActuController;
-use App\Repository\HomeRepository;
-use App\Repository\CategoryRepository;
-
-$csrfToken = $_SESSION['csrf_token'];
-
-// Récupération de l'ID de l'actualité à modifier
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;    
-$actuRepository = new ActuRepository($bdd);
-$homeRepository = new HomeRepository($bdd);
-$categoryRepository = new CategoryRepository($bdd);
-
-$controller = new ActuController($actuRepository, $homeRepository, $categoryRepository);
-$actu = $controller->update($id);
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>

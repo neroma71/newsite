@@ -3,15 +3,25 @@ require_once __DIR__ . '/../../utils/session_init.php';
 require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
+require_once __DIR__ . '/../../utils/constants.php';
 
 use App\Repository\UsersRepository;
 
 $usersRepository = new UsersRepository($bdd);
-$user = $usersRepository->findById($_SESSION['user_id']);
+
+$userId = $_SESSION['user_id'] ?? null;
+
+if (!$userId) {
+    session_destroy();
+    header('Location: /newsite/views/front/users/login.php');
+    exit;
+}
+
+$user = $usersRepository->findById((int)$userId);
 
 if (!$user) {
     session_destroy();
-    header('Location: /jerome2/views/users/login.php');
+    header('Location: /newsite/views/front/users/login.php');
     exit;
 }
 
@@ -41,7 +51,7 @@ if (!$user) {
                         <a href="articleManager.php">Gérer les articles</a>
                     </div>
                     <div class="action-card">
-                        <a href="actumanager.php">Gérer les actus</a>
+                        <a href="<?= BASE_URL ?>/manage/actus">Gérer les actus</a>
                     </div>     
                 </div>
         </section>

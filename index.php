@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require_once __DIR__ . '/utils/constants.php';
 require_once __DIR__ . '/utils/db_connect.php';
 require_once __DIR__ . '/utils/autoloader.php';
@@ -51,6 +51,7 @@ $path = rtrim($path, '/');
 if ($path === '') {
     $path = '/';
 }
+  
 
 //routes
 $routes = [
@@ -65,6 +66,14 @@ $routes = [
     '/actu.php' => fn() => $actuController->show(),
 
     //back office
+    '/manage/actus' => fn() => $actuController->manager(),
+
+    '/manage/actus/create' => fn() => $actuController->create(),
+
+    '/manage/actus/edit' => fn() => $actuController->update((int)$_GET['id']),
+
+    '/manage/actus/delete' => fn() => $actuController->delete((int)$_POST['delete_id']),
+
 ];
 
   //dispatcher
@@ -115,8 +124,7 @@ if ($real && str_starts_with($real, $publicDir) && is_file($real)) {
     exit;
 }
 
-
 //404
 http_response_code(404);
-require __DIR__ . '/public/404.php';
+echo "404 - Page introuvable";
 exit;

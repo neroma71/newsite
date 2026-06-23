@@ -20,89 +20,91 @@ class ActuController extends BaseController
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function create()
+    public function create(array &$errors = []): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            // Vérification CSRF
-        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        die('Erreur CSRF : token invalide');
-        }
-            $title = $_POST['title'] ?? '';
-            $content = $_POST['content'] ?? '';
-            $image = $_FILES['image'] ?? null;
-
-            $errors = [];
-            $uploadDir = __DIR__ . '/../../../public/uploads/';
-            $uploader = new ImageUploader($uploadDir);
-
-            // Modification : utilisation de uploadSingle
-            $uploadResult = $uploader->uploadSingle($image, $errors);
-            $img = $uploadResult ? $uploadResult['name'] : '';
-
-            $actu = new Actu([
-                'title' => $title,
-                'content' => $content,
-                'image' => $img,
-                'created_at' => new \DateTime()
+        // CAS GET → afficher formulaire
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->render('manage/createActu.php', [
+                'errors' => $errors
             ]);
-            $this->actuRepository->createActu($actu);
-            // Redirection après traitement
-             header('Location: /newsite/views/manage/actumanager.php');
-            exit;
+            return;
         }
+
+        // CAS POST → traitement
+        $this->ensureMethod('POST');
+        $this->ensureCsrf();
+
+        $title = $_POST['title'] ?? '';
+        $content = $_POST['content'] ?? '';
+        $image = $_FILES['image'] ?? null;
+
+        $uploadDir = __DIR__ . '/../../../public/uploads/';
+        $uploader = new ImageUploader($uploadDir);
+
+        $uploadResult = $uploader->uploadSingle($image, $errors);
+        $img = $uploadResult ? $uploadResult['name'] : null;
+
+        $actu = new Actu();
+        $actu->setTitle($title)
+            ->setContent($content)
+            ->setImage($img);
+
+        $this->actuRepository->createActu($actu);
+
+        header('Location: /newsite/manage/actus');
+        exit;
     }
-    public function update(int $id, array &$errors = []): Actu
+
+    public function update(int $id, array &$errors = []): void
     {
         $actu = $this->actuRepository->findById($id);
+
         if (!$actu) {
             throw new \Exception("Actu with ID $id not found.");
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            // Vérification CSRF
-            if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-                die('Erreur CSRF : token invalide');
-            }
-
-            $title = $_POST['title'] ?? '';
-            $content = $_POST['content'] ?? '';
-            $image = $_FILES['image'] ?? null;
-
-            $uploadDir = __DIR__ . '/../../../public/uploads/';
-            $uploader = new ImageUploader($uploadDir);
-
-            // Modification : utilisation de uploadSingle avec gestion de l'image existante
-            $uploadResult = $uploader->uploadSingle($image, $errors, $actu->getImage());
-            $img = $uploadResult ? $uploadResult['name'] : $actu->getImage();
-
-            $actu->setTitle($title)
-                 ->setContent($content)
-                 ->setImage($img);
-
-            $this->actuRepository->updateActu($actu);
-
-            // Rediriger vers le manager plutôt que actu.php
-            header('Location: /newsite/views/manage/actumanager.php');
-            exit;
+        // GET → formulaire
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->render('manage/editActu.php', [
+                'actu' => $actu,
+                'errors' => $errors
+            ]);
+            return;
         }
 
-        return $actu;
+        // POST → traitement
+        $this->ensureCsrf();
+
+        $title = trim($_POST['title'] ?? '');
+        $content = trim($_POST['content'] ?? '');
+        $image = $_FILES['image'] ?? null;
+
+        $errors = [];
+        $uploadDir = __DIR__ . '/../../../public/uploads/';
+        $uploader = new ImageUploader($uploadDir);
+
+        $uploadResult = $uploader->uploadSingle($image, $errors, $actu->getImage());
+        $img = $uploadResult ? $uploadResult['name'] : $actu->getImage();
+
+        $actu->setTitle($title)
+            ->setContent($content)
+            ->setImage($img);
+
+        $this->actuRepository->updateActu($actu);
+
+        header('Location: /newsite/manage/actus');
+        exit;
     }
     
     public function delete(int $id): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return;
-        }
+         $this->ensureMethod('POST');
 
         try {
-            if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-                throw new \Exception('Erreur CSRF : token invalide');
-            }
+            $this->ensureCsrf();
 
             $actu = $this->actuRepository->findById($id);
+
             if (!$actu) {
                 throw new \Exception("Actu not found.");
             }
@@ -116,13 +118,24 @@ class ActuController extends BaseController
 
             $this->actuRepository->deleteActu($id);
 
-            header('Location: /newsite/views/manage/actumanager.php');
+            header('Location: /newsite/manage/actus');
             exit;
 
         } catch (\Exception $e) {
-            echo "Erreur : " . htmlspecialchars($e->getMessage());
+            error_log($e->getMessage());
+            header('Location: /newsite/manage/actus?error=1');
             exit;
         }
+    }
+
+    public function manager(): void
+    {
+
+    $actus = $this->actuRepository->findAll();
+
+    $this->render('manage/actumanager.php', [
+        'actus' => $actus
+    ]);
     }
 
     public function show(): void
@@ -139,7 +152,7 @@ class ActuController extends BaseController
         $homes = $this->homeRepository->findAll();
         $categories = $this->categoryRepository->findAll();
 
-        $this->render('actu.php', [
+        $this->render('front/actu.php', [
             'actus' => $actus,
             'homes' => $homes,
             'categories' => $categories,

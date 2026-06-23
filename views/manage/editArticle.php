@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../utils/session_init.php';
-
+requireAuth();
 require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';

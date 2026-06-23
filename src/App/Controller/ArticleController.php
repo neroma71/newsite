@@ -279,7 +279,7 @@ class ArticleController extends BaseController
 
             $prevNext = $this->articleRepository->findPrevNext($id, $categoryId);
 
-            $this->render('article.php', [
+            $this->render('front/article.php', [
                 'article' => $article,
                 'categories' => $categories,
                 'categorie' => $categorie,

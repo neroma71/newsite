@@ -1,23 +1,3 @@
-<?php
-require_once __DIR__. '/../../utils/session_init.php';
-require_once __DIR__. '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__. '/../../utils/db_connect.php';
-
-use App\Repository\ActuRepository;
-use App\Controller\ActuController;
-use App\Repository\CategoryRepository;
-use App\Repository\HomeRepository;
-
-
-$actuRepository = new ActuRepository($bdd);
-$homeRepository = new HomeRepository($bdd);
-$categoryRepository = new CategoryRepository($bdd);
-$controller = new ActuController($actuRepository, $homeRepository, $categoryRepository);
-$controller->delete((int)$_POST['delete_id']);
-
-$actus = $actuRepository->findAll();
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -33,7 +13,7 @@ $actus = $actuRepository->findAll();
      </header>
     <div class="container">
         <p>
-         <a href="createActu.php" class="btn btn-primary">Créer une actualité</a>
+         <a href="/newsite/manage/actus/create" class="btn btn-primary">Créer une actualité</a>
         </p>
     <table class="table">
         <thead>
@@ -58,10 +38,10 @@ $actus = $actuRepository->findAll();
                     <?php endif; ?>
                 </td>
                 <td>
-                    <a href="editActu.php?id=<?= urlencode($actu->getId()) ?>" class="btn btn-primary">Modifier</a>
+                    <a href="/newsite/manage/actus/edit?id=<?= (int)$actu->getId() ?>" class="btn btn-primary">Modifier</a>
                 </td>
                 <td>
-                    <form method="POST" action="">
+                    <form method="POST" action="<?= BASE_URL ?>/manage/actus/delete">
                         <input type="hidden" name="delete_id" value="<?= htmlspecialchars($actu->getId()) ?>" />
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>" />
                         <button type="submit" class="btn btn-danger">Supprimer</button>

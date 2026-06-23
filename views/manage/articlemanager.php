@@ -4,6 +4,9 @@ require_once __DIR__ . '/../../utils/autoloader.php';
 Autoloader::register();
 require_once __DIR__ . '/../../utils/db_connect.php';
 
+
+requireAuth();
+
 use App\Repository\ImageRepository;
 use App\Repository\CategoryRepository;  
 use App\Repository\ArticleRepository;

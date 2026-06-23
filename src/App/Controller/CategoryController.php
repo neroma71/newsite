@@ -148,7 +148,7 @@ class CategoryController extends BaseController
             $currentPage = $pagination['currentPage'];
         }
 
-        $this->render('categories.php', [
+        $this->render('front/categories.php', [
         'categories'   => $categories,
         'categorie'    => $categorie,
         'articles'     => $articles,
