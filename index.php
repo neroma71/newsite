@@ -6,10 +6,10 @@ require_once __DIR__ . '/utils/autoloader.php';
 
 \Autoloader::register();
 
-use App\Controller\CategoryController;
-use App\Controller\ArticleController;
 use App\Controller\HomeController;
 use App\Controller\ActuController;
+use App\Controller\CategoryController;
+use App\Controller\ArticleController;
 use App\Repository\CategoryRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\ImageRepository;
@@ -27,8 +27,8 @@ $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepo
 
 $youtubeService = new YoutubeEmbedService();
 
-$homeController = new HomeController($homeRepository, $categoryRepository);
 $categoryController = new CategoryController($categoryRepository, $articleRepository);
+$homeController = new HomeController($homeRepository, $categoryRepository);
 $actuController = new ActuController($actuRepository, $homeRepository, $categoryRepository);
 $articleController = new ArticleController(
     $articleRepository,
@@ -66,6 +66,7 @@ $routes = [
     '/actu.php' => fn() => $actuController->show(),
 
     //back office
+    // actus management
     '/manage/actus' => fn() => $actuController->manager(),
 
     '/manage/actus/create' => fn() => $actuController->create(),
@@ -74,10 +75,18 @@ $routes = [
 
     '/manage/actus/delete' => fn() => $actuController->delete((int)$_POST['delete_id']),
 
+    // articles management
+    '/manage/articles' => fn() => $articleController->manager(),
+
+    '/manage/articles/create' => fn() => $articleController->create(),
+
+    '/manage/articles/edit' => fn() => $articleController->update((int)$_GET['id']),
+
+    '/manage/articles/delete' => fn() => $articleController->delete(), 
+
 ];
 
   //dispatcher
-
 if (isset($routes[$path])) {
     $routes[$path]();
     exit;

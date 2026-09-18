@@ -19,9 +19,7 @@ $controller = new CategoryController(
     $categoryRepository,
     $articleRepository
 );
-
 $controller->create();
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

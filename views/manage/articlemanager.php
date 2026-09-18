@@ -1,29 +1,6 @@
 <?php
-require_once __DIR__ . '/../../utils/session_init.php';
-require_once __DIR__ . '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../../utils/db_connect.php';
+/** @var \App\Entity\Articles[] $articles */
 
-
-requireAuth();
-
-use App\Repository\ImageRepository;
-use App\Repository\CategoryRepository;  
-use App\Repository\ArticleRepository;
-use App\Controller\ArticleController;  
-use App\Service\YoutubeEmbedService;
-
-
-$categoryRepository = new CategoryRepository($bdd);
-$imageRepository = new ImageRepository($bdd);
-$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-$youtubeEmbedService = new YoutubeEmbedService();
-$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeEmbedService);
-
-$controller->delete();
-
-
-$articles = $articleRepository->findAllWithCategory();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -40,7 +17,7 @@ $articles = $articleRepository->findAllWithCategory();
      </header>
     <div class="container">
         <p>
-         <a href="createArticle.php" class="btn btn-primary">Créer un article</a>
+         <a href="<?= BASE_URL ?>/manage/articles/create" class="btn btn-primary">Créer un article</a>
         </p>
     <table class="table">
         <thead>
@@ -58,9 +35,9 @@ $articles = $articleRepository->findAllWithCategory();
                 <td><?= htmlspecialchars($article->getId()) ?></td>
                 <td><?= htmlspecialchars($article->getTitle()) ?></td>
                  <td><?= htmlspecialchars($article->getCategoryTitle()) ?></td>
-                <td><a href="editArticle.php?id=<?= $article->getId() ?>" class="btn btn-primary">Modifier</a> </td>
+                <td><a href="<?= BASE_URL ?>/manage/articles/edit?id=<?= $article->getId() ?>" class="btn btn-primary"> Modifier</a> </td>
                 <td>
-                    <form method="post" action="" style="display:inline;">
+                    <form method="post" action="<?= BASE_URL ?>/manage/articles/delete" style="display:inline;">
                         <input type="hidden" name="delete_id" value="<?= $article->getId() ?>">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                         <button type="submit" class="btn btn-danger">Supprimer</button>

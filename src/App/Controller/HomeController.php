@@ -163,12 +163,12 @@ class HomeController extends BaseController
         }
 
     public function show(): void
-{
+    {
     $this->render('front/index.php', [
         'homes' => $this->homeRepository->findAll(),
         'categories' => $this->categoryRepository->findAll(),
         'baseUrl' => BASE_URL
     ]);
-}
+    }
 
 }

@@ -1,32 +1,7 @@
 <?php
-require_once __DIR__ . '/../../utils/session_init.php';
-requireAuth();
-require_once __DIR__ . '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../../utils/db_connect.php';
-use App\Repository\ImageRepository;
-use App\Repository\CategoryRepository;
-use App\Repository\ArticleRepository;
-use App\Controller\ArticleController;
-use App\Service\YoutubeEmbedService;
-
-
-$csrfToken = $_SESSION['csrf_token'];
-
-// Récupération de l'ID de l'article à modifier
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-$categoryRepository = new CategoryRepository($bdd);
-$imageRepository = new ImageRepository($bdd);
-$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-$youtubeEmbedService = new YoutubeEmbedService();
-
-$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeEmbedService);
-$controller->update($id);
-
-
-// Récupération de l'article pour affichage
-$article = $id ? $articleRepository->findById($id) : null;
+/** @var \App\Entity\Articles $article */
+/** @var \App\Entity\Category[] $categories */
+/** @var array $errors */
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +11,7 @@ $article = $id ? $articleRepository->findById($id) : null;
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier l'article</title>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/manager.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/manager.css" />
 </head>
 <body>
     <header>
@@ -56,7 +31,7 @@ $article = $id ? $articleRepository->findById($id) : null;
         <div class="formdiv">
                 <p><label for="category_id">Choisir la catégorie :</label></p>
                 <select name="category_id" id="category_id" required>
-                    <?php foreach ($categoryRepository->findAll() as $category): ?>
+                    <?php foreach ($categories as $category): ?>
                         <option value="<?= $category->getId() ?>" <?= $article->getCategoryId() === $category->getId() ? 'selected' : '' ?>>
                             <?= htmlspecialchars($category->getTitle()) ?>
                         </option>
@@ -75,7 +50,6 @@ $article = $id ? $articleRepository->findById($id) : null;
                             <input type="text" name="image_titles[<?= $image->getId() ?>]" id="image_title_<?= $image->getId() ?>" value="<?= htmlspecialchars($image->getImageTitle()) ?>">
                         </div>
                         <p><label for="image_file_<?= $image->getId() ?>">Remplacer l'image :</label></p>
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
                         <div class="forminput">
                             <input type="file" name="image_files[<?= $image->getId() ?>]" id="image_file_<?= $image->getId() ?>" accept="image/*">
                         </div>
@@ -103,7 +77,7 @@ $article = $id ? $articleRepository->findById($id) : null;
     </div>
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-    <script src="js/updateImage.js"></script>
+    <script src="<?= BASE_URL ?>/js/updateImage.js"></script>
     <script>
         ClassicEditor
             .create( document.querySelector( '#content' ) )

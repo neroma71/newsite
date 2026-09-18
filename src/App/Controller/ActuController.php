@@ -22,7 +22,7 @@ class ActuController extends BaseController
 
     public function create(array &$errors = []): void
     {
-        // CAS GET → afficher formulaire
+        // cas get afficher formulaire
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->render('manage/createActu.php', [
                 'errors' => $errors
@@ -30,7 +30,7 @@ class ActuController extends BaseController
             return;
         }
 
-        // CAS POST → traitement
+        // cas post  traitement
         $this->ensureMethod('POST');
         $this->ensureCsrf();
 

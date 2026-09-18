@@ -21,7 +21,7 @@ namespace App\Entity;
         /**
          * Get the value of id
          */ 
-        public function getId()
+        public function getId(): ?int
         {
                 return $this->id;
         }
@@ -31,7 +31,7 @@ namespace App\Entity;
          *
          * @return  self
          */ 
-        public function setId($id)
+        public function setId(int $id): self
         {
                 $this->id = $id;
 
@@ -51,7 +51,7 @@ namespace App\Entity;
          *
          * @return  self
          */ 
-        public function setTitle($title)
+        public function setTitle(string $title)
         {
                 $this->title = $title;
 
@@ -61,7 +61,7 @@ namespace App\Entity;
         /**
          * Get the value of content
          */ 
-        public function getContent()
+        public function getContent(): string
         {
                 return $this->content;
         }
@@ -71,7 +71,7 @@ namespace App\Entity;
          *
          * @return  self
          */ 
-        public function setContent($content)
+        public function setContent(string $content): self
         {
                 $this->content = $content;
 
@@ -158,7 +158,7 @@ namespace App\Entity;
          * Hydrate the object with data
          */
         public function hydrate(array $data): void
-    {
+        {
         if (isset($data['id'])) {
             $this->setId($data['id']);
         }

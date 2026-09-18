@@ -23,208 +23,244 @@ class ArticleController extends BaseController
         $this->youtubeEmbedService = $youtubeEmbedService;
     }
 
-    public function create()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        public function create(array &$errors = []): void
+        {
+            // GET → afficher le formulaire
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $categories = $this->categoryRepository->findAll();
 
-        // Vérification CSRF
-        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        die('Erreur CSRF : token invalide');
-        }
+                $this->render('manage/createArticle.php', [
+                    'categories' => $categories,
+                    'errors' => $errors
+                ]);
+                return;
+            }
+
+            // POST → traitement
+            $this->ensureCsrf();
 
             $title = trim($_POST['title'] ?? '');
             $content = trim($_POST['content'] ?? '');
             $images = $_FILES['images'] ?? null;
             $categoryId = $_POST['category_id'] ?? null;
 
-             if (!is_numeric($categoryId) || !$this->categoryRepository->findById((int)$categoryId)) {
-                        throw new \Exception("Catégorie invalide.");
+            if (!is_numeric($categoryId) || !$this->categoryRepository->findById((int)$categoryId)) {
+                throw new \Exception("Catégorie invalide.");
             }
 
-            $errors = [];
             $uploadDir = __DIR__ . '/../../../public/uploads/';
             $uploader = new ImageUploader($uploadDir);
 
-            //  gère le cas où aucune image n'est envoyée
             $uploadedImages = [];
+
             if (
                 $images &&
                 isset($images['error']) &&
                 is_array($images['error']) &&
-                // Vérifie s'il y a au moins une image envoyée sans erreur
                 array_filter($images['error'], fn($err) => $err === UPLOAD_ERR_OK)
             ) {
                 $uploadedImages = $uploader->uploadMultiple($images, $errors);
             }
 
-            if (empty($errors)) {
-                $article = new Articles([
-                    'title' => $title,
-                    'content' => $content,
-                    'images' => $uploadedImages,
-                    'categoryId' => $categoryId
+            if (!empty($errors)) {
+                $categories = $this->categoryRepository->findAll();
+
+                $this->render('manage/createArticle.php', [
+                    'categories' => $categories,
+                    'errors' => $errors
                 ]);
-                $this->articleRepository->createArticle($article);
-                header('Location: /newsite/views/manage/articlemanager.php');
-                exit;
-            } else {
-                foreach ($errors as $error) {
-                    echo "<p>Error: {$error}</p>";
-                }
+                return;
             }
+
+            $article = new Articles([
+                'title' => $title,
+                'content' => $content,
+                'images' => $uploadedImages,
+                'categoryId' => (int)$categoryId
+            ]);
+
+            $this->articleRepository->createArticle($article);
+
+            header('Location: /newsite/manage/articles');
+            exit;
         }
-    }
-       public function update(int $id)
+
+        public function update(int $id, array &$errors = []): void
         {
             $article = $this->articleRepository->findById($id);
+
             if (!$article) {
                 throw new \Exception("Article not found");
             }
-    
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                 $postedToken = $_POST['csrf_token'] ?? '';
-                if (!$postedToken || !hash_equals($_SESSION['csrf_token'], $postedToken)) {
-                throw new \Exception("Invalid CSRF token");
-                }
-                $title = trim($_POST['title'] ?? $article->getTitle());
-                $content = trim($_POST['content'] ?? $article->getContent());
-                $images = $_FILES['images'] ?? null;
-                $imageFiles = $_FILES['image_files'] ?? [];
-                $categoryId = $_POST['category_id'] ?? $article->getCategoryId();
-                $imageTitles = $_POST['image_titles'] ?? [];
-                $deleteImages = $_POST['delete_images'] ?? [];
 
-                $errors = [];
-                $uploadDir = __DIR__ . '/../../../public/uploads/';
-                $uploader = new ImageUploader($uploadDir);
+            // GET → afficher le formulaire
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $categories = $this->categoryRepository->findAll();
 
-                // Suppression des images cochées
-                foreach ($deleteImages as $imageIdToDelete) {
-                    // Récupère l'objet Image associé (dans l'article)
-                    $imageToDelete = null;
-                    foreach ($article->getImages() as $image) {
-                        if ($image->getId() == $imageIdToDelete) {
-                            $imageToDelete = $image;
-                            break;
-                        }
-                    }
-                    if ($imageToDelete) {
-                        // Suppression en base
-                        $this->imageRepository->delete($imageIdToDelete);
-                        // Suppression dans l'objet Article
-                        $article->removeImage($imageToDelete);
-                    }
-                }
+                $this->render('manage/editArticle.php', [
+                    'article' => $article,
+                    'categories' => $categories,
+                    'errors' => $errors
+                ]);
+                return;
+            }
 
-                // upload de nouvelles images (si envoyées)
-                if ($images && isset($images['error'][0]) && $images['error'][0] === UPLOAD_ERR_OK) {
-                    $uploadedImages = $uploader->uploadMultiple($images, $errors);
-                    foreach ($uploadedImages as $image) {
-                        $article->addImage($image);
-                    }
-                }
+            // POST → traitement
+            $this->ensureCsrf();
 
-                // mise à jour des titres et remplacement d'images existantes
+            $title = trim($_POST['title'] ?? $article->getTitle());
+            $content = trim($_POST['content'] ?? $article->getContent());
+            $images = $_FILES['images'] ?? null;
+            $imageFiles = $_FILES['image_files'] ?? [];
+            $categoryId = $_POST['category_id'] ?? $article->getCategoryId();
+            $imageTitles = $_POST['image_titles'] ?? [];
+            $deleteImages = $_POST['delete_images'] ?? [];
+
+            $uploadDir = __DIR__ . '/../../../public/uploads/';
+            $uploader = new ImageUploader($uploadDir);
+
+            // Suppression des images cochées
+            foreach ($deleteImages as $imageIdToDelete) {
+
+                $imageToDelete = null;
+
                 foreach ($article->getImages() as $image) {
-                    $imgId = $image->getId();
+                    if ($image->getId() == $imageIdToDelete) {
+                        $imageToDelete = $image;
+                        break;
+                    }
+                }
 
-                    if (isset($imageTitles[$imgId])) {
-                        $image->setImageTitle(trim($imageTitles[$imgId]));
+                if ($imageToDelete) {
+                    $filePath = $uploadDir . basename($imageToDelete->getPath());
+
+                    if (is_file($filePath)) {
+                        unlink($filePath);
                     }
 
-                    if (isset($imageFiles['error'][$imgId]) && $imageFiles['error'][$imgId] === UPLOAD_ERR_OK) {
-                        $file = [
-                            'name' => $imageFiles['name'][$imgId],
-                            'type' => $imageFiles['type'][$imgId],
-                            'tmp_name' => $imageFiles['tmp_name'][$imgId],
-                            'error' => $imageFiles['error'][$imgId],
-                            'size' => $imageFiles['size'][$imgId],
-                        ];
+                    $this->imageRepository->delete($imageIdToDelete);
+                    $article->removeImage($imageToDelete);
+                }
+            }
 
-                        $uploaded = $uploader->uploadSingle($file, $errors);
+            // Upload de nouvelles images
+            if (
+                $images &&
+                isset($images['error']) &&
+                is_array($images['error']) &&
+                array_filter($images['error'], fn($err) => $err === UPLOAD_ERR_OK)
+            ) {
+                $uploadedImages = $uploader->uploadMultiple($images, $errors);
 
-                        if ($uploaded) {
+                foreach ($uploadedImages as $image) {
+                    $article->addImage($image);
+                }
+            }
+
+            // Modification des images existantes
+            foreach ($article->getImages() as $image) {
+
+                $imgId = $image->getId();
+
+                if (isset($imageTitles[$imgId])) {
+                    $image->setImageTitle(trim($imageTitles[$imgId]));
+                }
+
+                if (
+                    isset($imageFiles['error'][$imgId]) &&
+                    $imageFiles['error'][$imgId] === UPLOAD_ERR_OK
+                ) {
+                    $file = [
+                        'name' => $imageFiles['name'][$imgId],
+                        'type' => $imageFiles['type'][$imgId],
+                        'tmp_name' => $imageFiles['tmp_name'][$imgId],
+                        'error' => $imageFiles['error'][$imgId],
+                        'size' => $imageFiles['size'][$imgId],
+                    ];
+
+                    $uploaded = $uploader->uploadSingle($file, $errors);
+
+                    if ($uploaded) {
 
                         $oldPath = $uploadDir . basename($image->getPath());
-
 
                         if (is_file($oldPath)) {
                             unlink($oldPath);
                         }
-                        $image->setPath('/uploads/' . $uploaded['name']);
-                        }
-                    }
 
-                    // mise à jour en BDD
-                    $this->imageRepository->update($image);
+                        $image->setPath('/uploads/' . $uploaded['name']);
+                    }
                 }
 
-                   // Validation catégorie
-                    if (!is_numeric($categoryId) || !$this->categoryRepository->findById((int)$categoryId)) {
-                        throw new \Exception("Catégorie invalide.");
-                    }
-
-                // mise à jour des autres infos
-                $article->setTitle($title);
-                $article->setContent($content);
-                $article->setCategoryId($categoryId);
-
-                // sauvegarde de l'update de l'article
-                $this->articleRepository->updateArticle($article);
-
-                header('Location: ./articleManager.php');
-                exit;
+                $this->imageRepository->update($image);
             }
+
+            // Validation catégorie
+            if (
+                !is_numeric($categoryId) ||
+                !$this->categoryRepository->findById((int)$categoryId)
+            ) {
+                throw new \Exception("Catégorie invalide.");
+            }
+
+            // Mise à jour de l'article
+            $article->setTitle($title);
+            $article->setContent($content);
+            $article->setCategoryId((int)$categoryId);
+
+            $this->articleRepository->updateArticle($article);
+
+            header('Location: /newsite/manage/articles');
+            exit;
         }
 
         public function delete(): void
         {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['delete_id'], $_POST['csrf_token'])) {
-            return;
-        }
+            $this->ensureMethod('POST');
+            $this->ensureCsrf();
 
-        try {
-            $id = (int) $_POST['delete_id'];
-            $csrfToken = $_POST['csrf_token'] ?? '';
+            try {
+                $id = (int)($_POST['delete_id'] ?? 0);
 
-            if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
-                throw new \Exception('Erreur CSRF : token invalide');
-            }
-
-            $article = $this->articleRepository->findById($id);
-
-            if (!$article) {
-                throw new \Exception("Aucun article trouvé avec l’ID $id.");
-            }
-
-            $uploadDir = __DIR__ . '/../../../public/uploads/';
-
-            // 1. supprimer images physiques + BDD
-            foreach ($article->getImages() as $image) {
-
-                $filePath = $uploadDir . basename($image->getPath());
-
-                if (is_file($filePath)) {
-                    unlink($filePath);
+                if ($id <= 0) {
+                    throw new \Exception("ID d'article invalide.");
                 }
 
-                $this->imageRepository->delete($image->getId());
+                $article = $this->articleRepository->findById($id);
+
+                if (!$article) {
+                    throw new \Exception("Aucun article trouvé avec l'ID $id.");
+                }
+
+                $uploadDir = __DIR__ . '/../../../public/uploads/';
+
+                // Suppression des images physiques + BDD
+                foreach ($article->getImages() as $image) {
+
+                    $filePath = $uploadDir . basename($image->getPath());
+
+                    if (is_file($filePath)) {
+                        unlink($filePath);
+                    }
+
+                    $this->imageRepository->delete($image->getId());
+                }
+
+                // Suppression de l'article
+                $this->articleRepository->deleteArticle($id);
+
+                header('Location: /newsite/manage/articles');
+                exit;
+
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+
+                header('Location: /newsite/manage/articles?error=1');
+                exit;
             }
-
-            // 2. supprimer article
-            $this->articleRepository->deleteArticle($id);
-
-            header('Location: /newsite/views/manage/articleManager.php');
-            exit;
-
-        } catch (\Exception $e) {
-            echo "Erreur : " . htmlspecialchars($e->getMessage());
-            echo "<br><a href='javascript:history.back()'>Retour</a>";
-            exit;
         }
-     }
 
-      public function getPaginatedData(int $categoryId, int $currentPage = 1, int $limit = 10): array
+        public function getPaginatedData(int $categoryId, int $currentPage = 1, int $limit = 10): array
             {
                 $totalArticles = $this->articleRepository->findCount($categoryId);
                 $totalPages = max(1, ceil($totalArticles / $limit));
@@ -287,6 +323,15 @@ class ArticleController extends BaseController
                 'prevId' => $prevNext['prev'],
                 'nextId' => $prevNext['next'],
                 'splitContent' => $splitContent,
+            ]);
+        }
+
+         public function manager(): void
+        {
+            $articles = $this->articleRepository->findAllWithCategory();
+
+            $this->render('manage/articleManager.php', [
+                'articles' => $articles,
             ]);
         }
 }

@@ -1,24 +1,6 @@
 <?php
-require_once __DIR__ . '/../../utils/session_init.php';
-requireAuth();
-require_once __DIR__ . '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../../utils/db_connect.php';
-use App\Repository\ArticleRepository;
-use App\Controller\ArticleController;
-use App\Repository\CategoryRepository;
-use App\Repository\ImageRepository;
-use App\Service\YoutubeEmbedService;
-
-$categoryRepository = new CategoryRepository($bdd);
-$categories = $categoryRepository->findAll(); 
-$imageRepository = new ImageRepository($bdd);
-
-$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-$youtubeEmbedService = new YoutubeEmbedService();
-$controller = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeEmbedService);
-
-$controller->create();
+/** @var \App\Entity\Category[] $categories */
+/** @var array $errors */
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,20 +9,20 @@ $controller->create();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer un article</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/manager.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/manager.css">
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="articlemanager.php">Gérer les articles</a></li>
-                <li><a href="category.php">Gérer les catégories</a></li>
+                <li><a href="<?= BASE_URL ?>/manage/articles">Gérer les articles</a></li>
+                <li><a href="<?= BASE_URL ?>/manage/categories">Gérer les catégories</a></li>
             </ul>
         </nav>
         <p>créer un article</p>
     </header>
     <div class="container">
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="<?= BASE_URL ?>/manage/articles/create" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
             <div class="formdiv">
                 <p><label for="title">Titre de l'article :</label></p>

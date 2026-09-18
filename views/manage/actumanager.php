@@ -1,3 +1,9 @@
+<?php
+/** @var \App\Entity\Actu[] $actus */
+/** @var \App\Entity\Actu $actu */
+/** @var string|null $csrfToken */
+/** @var array $errors */
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -32,13 +38,13 @@
                 <td><?= htmlspecialchars($actu->getTitle()) ?></td>
                 <td>
                     <?php if ($actu->getImage()): ?>
-                        <img src="../../public/uploads/<?= htmlspecialchars($actu->getImage()) ?>" 
-                             style="max-width:40px;max-height:40px;" 
+                        <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($actu->getImage()) ?>" 
+                             style="max-width:40px; max-height:40px;" 
                              alt="image">
                     <?php endif; ?>
                 </td>
                 <td>
-                    <a href="/newsite/manage/actus/edit?id=<?= (int)$actu->getId() ?>" class="btn btn-primary">Modifier</a>
+                    <a href="<?= BASE_URL ?>/manage/actus/edit?id=<?= (int)$actu->getId() ?>" class="btn btn-primary"> Modifier</a>
                 </td>
                 <td>
                     <form method="POST" action="<?= BASE_URL ?>/manage/actus/delete">

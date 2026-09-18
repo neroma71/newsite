@@ -48,7 +48,7 @@ if (!$user) {
                         <a href="category.php">Gérer les catégories</a>
                     </div>  
                     <div class="action-card">
-                        <a href="articleManager.php">Gérer les articles</a>
+                        <a href="<?= BASE_URL ?>/manage/articles">Gérer les articles</a>
                     </div>
                     <div class="action-card">
                         <a href="<?= BASE_URL ?>/manage/actus">Gérer les actus</a>
