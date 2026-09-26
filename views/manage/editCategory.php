@@ -1,31 +1,7 @@
 <?php
-require_once __DIR__ . '/../../utils/session_init.php';
-requireAuth();
-require_once __DIR__ . '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../../utils/db_connect.php';
-use App\Repository\CategoryRepository;
-use App\Repository\ArticleRepository;
-use App\Repository\ImageRepository;
-use App\Controller\CategoryController;
-
-$categoryRepository = new CategoryRepository($bdd);
-$imageRepository = new ImageRepository($bdd);
-$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-
-$controller = new CategoryController(
-    $categoryRepository,
-    $articleRepository,
-);
-
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-$controller->update($id);
-
-// On récupère toujours l'objet Category pour affichage
-$category = $id ? $categoryRepository->findById($id) : null;    
+/** @var \App\Entity\Category $category */
+/** @var array $errors */
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

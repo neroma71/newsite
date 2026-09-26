@@ -17,24 +17,8 @@ if (empty($_SESSION['csrf_token'])) {
 if (isset($_SESSION['last_activity']) && time() - $_SESSION['last_activity'] > 1800) {
     session_unset();
     session_destroy();
-    header('Location: /newsite/views/users/login.php');
+     header('Location: ' . BASE_URL . '/users/login');
     exit;
 }
 
 $_SESSION['last_activity'] = time();
-
-/**
- * Guard admin
- */
-function requireAuth(): void
-{
-    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-    // protège toute la zone admin
-    if (str_starts_with($path, '/newsite/manage')) {
-        if (empty($_SESSION['user_id'])) {
-            header('Location: /newsite/views/users/login.php');
-            exit;
-        }
-    }
-}

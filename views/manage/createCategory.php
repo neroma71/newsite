@@ -1,25 +1,5 @@
 <?php
-require_once __DIR__ . '/../../utils/session_init.php';
-requireAuth();
-require_once __DIR__ . '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../../utils/db_connect.php';
-use App\Repository\CategoryRepository;
-use App\Repository\ArticleRepository;
-use App\Repository\ImageRepository;
-use App\Repository\HomeRepository;
-use App\Controller\CategoryController;
-
-$categoryRepository = new CategoryRepository($bdd);
-$imageRepository = new ImageRepository($bdd);
-$homeRepository = new HomeRepository($bdd);
-$articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
-
-$controller = new CategoryController(
-    $categoryRepository,
-    $articleRepository
-);
-$controller->create();
+/** @var array $errors */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,8 +15,8 @@ $controller->create();
     <p>Créer une catégorie</p>
 </header>
     <div class="container">
-    <form method="post" enctype="multipart/form-data" action="">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <form method="POST" action="<?= BASE_URL ?>/manage/categories/create" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
         <div class="mb-3">
             <label for="title">Titre :</label>
             <input type="text" name="title" id="title"  class="form-control" required>

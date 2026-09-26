@@ -26,7 +26,7 @@ class ArticleController extends BaseController
         public function create(array &$errors = []): void
         {
             // GET → afficher le formulaire
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $categories = $this->categoryRepository->findAll();
 
                 $this->render('manage/createArticle.php', [
@@ -37,6 +37,7 @@ class ArticleController extends BaseController
             }
 
             // POST → traitement
+            $this->ensureMethod('POST');
             $this->ensureCsrf();
 
             $title = trim($_POST['title'] ?? '');
@@ -94,7 +95,7 @@ class ArticleController extends BaseController
             }
 
             // GET → afficher le formulaire
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $categories = $this->categoryRepository->findAll();
 
                 $this->render('manage/editArticle.php', [
@@ -106,6 +107,7 @@ class ArticleController extends BaseController
             }
 
             // POST → traitement
+            $this->ensureMethod('POST');
             $this->ensureCsrf();
 
             $title = trim($_POST['title'] ?? $article->getTitle());

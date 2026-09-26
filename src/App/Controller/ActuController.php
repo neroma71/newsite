@@ -23,7 +23,7 @@ class ActuController extends BaseController
     public function create(array &$errors = []): void
     {
         // cas get afficher formulaire
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $this->render('manage/createActu.php', [
                 'errors' => $errors
             ]);
@@ -64,7 +64,7 @@ class ActuController extends BaseController
         }
 
         // GET → formulaire
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $this->render('manage/editActu.php', [
                 'actu' => $actu,
                 'errors' => $errors
@@ -73,6 +73,7 @@ class ActuController extends BaseController
         }
 
         // POST → traitement
+        $this->ensureMethod('POST');
         $this->ensureCsrf();
 
         $title = trim($_POST['title'] ?? '');

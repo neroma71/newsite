@@ -1,84 +1,85 @@
 <?php
-require_once __DIR__ . '/../../utils/session_init.php';
-requireAuth();
-require_once __DIR__ . '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../../utils/db_connect.php';
-use App\Repository\CategoryRepository;
-use App\Repository\ArticleRepository;
-
-use App\Controller\CategoryController;
-use App\Repository\ImageRepository;
-
-$categoryRepository = new CategoryRepository($bdd);
-$articleRepository = new ArticleRepository($bdd, $categoryRepository, new ImageRepository($bdd));
-
-
-$controller = new CategoryController(
-    $categoryRepository,
-    $articleRepository,
-);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    try {
-        $controller->delete((int)$_POST['delete_id'], $_POST['csrf_token'] ?? '');
-    } catch (\Exception $e) {
-        echo "<div class='alert alert-danger'>Erreur : " . htmlspecialchars($e->getMessage()) . "</div>";
-    }
-}
-
-$categories = $categoryRepository->findAll();
+/** @var \App\Entity\Category[] $categories */
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-        <link rel="stylesheet" href="css/manager.css">
+
+    <title>Gestion des catégories</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-4QGf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+          crossorigin="anonymous">
+
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/manager.css">
 </head>
 <body>
-      <header>
-            <p>Gestion des catégories</p>
-        </header>
-    <div class="container">
-        <p><a href="createCategory.php" class="btn btn-primary">Créer une catégorie</a></p>
-        <table class="table mt-5">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Titre</th>
-                    <th>Description</th>
-                    <th>Image</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($categories as $category): ?>
-                <tr>
-                    <td><?= htmlspecialchars($category->getId()) ?></td>
-                    <td><?= htmlspecialchars($category->getTitle()) ?></td>
-                    <td><?= htmlspecialchars(strip_tags($category->getDescription())) ?></td>
-                    <td>
-                        <?php if ($category->getImage()): ?>
-                            <img src="../../public/uploads/<?= htmlspecialchars($category->getImage()) ?>" style="max-width:40px;max-height:40px;" alt="image">
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <button class="btn btn-primary">
-                            <a href="editCategory.php?id=<?= $category->getId() ?>">Éditer</a>
+<header>
+    <p>Gestion des catégories</p>
+</header>
+<div class="container">
+    <p>
+        <a href="<?= BASE_URL ?>/manage/categories/create"
+           class="btn btn-primary">
+            Créer une catégorie
+        </a>
+    </p>
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($categories as $category): ?>
+            <tr>
+                <td>
+                    <?= htmlspecialchars($category->getId()) ?>
+                </td>
+                <td>
+                    <?= htmlspecialchars($category->getTitle()) ?>
+                </td>
+                <td>
+                    <?= htmlspecialchars(strip_tags($category->getDescription())) ?>
+                </td>
+                <td>
+                    <?php if ($category->getImage()): ?>
+                        <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($category->getImage()) ?>"
+                             style="max-width:40px;max-height:40px;"
+                             alt="image">
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <a href="<?= BASE_URL ?>/manage/categories/edit?id=<?= $category->getId() ?>"
+                       class="btn btn-primary">
+                        Éditer
+                    </a>
+                    <form method="POST"
+                          action="<?= BASE_URL ?>/manage/categories/delete"
+                          style="display:inline;">
+                        <input type="hidden"
+                               name="delete_id"
+                               value="<?= $category->getId() ?>">
+                        <input type="hidden"
+                               name="csrf_token"
+                               value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                        <button type="submit"
+                                class="btn btn-danger">
+                            Supprimer
                         </button>
-                        <form method="post" action="" style="display:inline;">
-                            <input type="hidden" name="delete_id" value="<?= $category->getId() ?>">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                            <button type="submit" class="btn btn-danger">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
+                    </form>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

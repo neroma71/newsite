@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once __DIR__ . '/utils/constants.php';
+require_once __DIR__ . '/utils/session_init.php';
 require_once __DIR__ . '/utils/db_connect.php';
 require_once __DIR__ . '/utils/autoloader.php';
 
@@ -52,6 +52,10 @@ if ($path === '') {
     $path = '/';
 }
   
+if (str_starts_with($path, '/manage') && empty($_SESSION['user_id'])) {
+    header('Location: ' . BASE_URL . '/users/login');
+    exit;
+}
 
 //routes
 $routes = [
@@ -75,6 +79,7 @@ $routes = [
 
     '/manage/actus/delete' => fn() => $actuController->delete((int)$_POST['delete_id']),
 
+    //back office
     // articles management
     '/manage/articles' => fn() => $articleController->manager(),
 
@@ -83,6 +88,16 @@ $routes = [
     '/manage/articles/edit' => fn() => $articleController->update((int)$_GET['id']),
 
     '/manage/articles/delete' => fn() => $articleController->delete(), 
+
+    //back office
+    // categories management
+    '/manage/categories' => fn() => $categoryController->manager(),
+
+    '/manage/categories/create' => fn() => $categoryController->create(),
+
+    '/manage/categories/edit' => fn() => $categoryController->update((int) $_GET['id']),
+    
+    '/manage/categories/delete' => fn() => $categoryController->delete(),
 
 ];
 
