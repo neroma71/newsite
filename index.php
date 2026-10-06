@@ -10,11 +10,13 @@ use App\Controller\HomeController;
 use App\Controller\ActuController;
 use App\Controller\CategoryController;
 use App\Controller\ArticleController;
+use App\Controller\UsersController;
 use App\Repository\CategoryRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\ImageRepository;
 use App\Repository\HomeRepository;
 use App\Repository\ActuRepository;
+use App\Repository\UsersRepository;
 use App\Service\YoutubeEmbedService;
 
 //dépendances des controllers, repositories et services
@@ -24,6 +26,7 @@ $categoryRepository = new CategoryRepository($bdd);
 $imageRepository = new ImageRepository($bdd);
 $actuRepository = new ActuRepository($bdd);
 $articleRepository = new ArticleRepository($bdd, $categoryRepository, $imageRepository);
+$usersRepository = new UsersRepository($bdd);
 
 $youtubeService = new YoutubeEmbedService();
 
@@ -36,6 +39,7 @@ $articleController = new ArticleController(
     $categoryRepository,
     $youtubeService
 );
+$usersController = new UsersController($usersRepository);
 
   //parsing de l'URL
 $requestUri = $_SERVER['REQUEST_URI'];
@@ -99,6 +103,18 @@ $routes = [
     
     '/manage/categories/delete' => fn() => $categoryController->delete(),
 
+    //back office
+    // home management
+    '/manage/home' => fn() => $homeController->manager(),
+    '/manage/home/create' => fn() => $homeController->create(),
+    '/manage/home/edit' => fn() => $homeController->update((int)$_GET['id']),
+    '/manage/home/delete' => fn() => $homeController->delete((int)$_POST['delete_id']),
+
+    //back office
+    // users management
+    '/manage/dashboard' => fn() => $usersController->dashboard(),
+    '/users/register' => fn() => $usersController->register(),
+    '/users/login' => fn() => $usersController->login(),
 ];
 
   //dispatcher

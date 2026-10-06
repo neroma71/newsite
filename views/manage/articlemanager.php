@@ -1,6 +1,5 @@
 <?php
 /** @var \App\Entity\Articles[] $articles */
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">

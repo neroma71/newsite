@@ -1,32 +1,10 @@
-<?php
-require_once __DIR__ . '/../../utils/session_init.php';
-requireAuth();
-require_once __DIR__ . '/../../utils/autoloader.php';
-Autoloader::register();
-require_once __DIR__ . '/../../utils/db_connect.php';
-use App\Repository\HomeRepository;
-use App\Controller\HomeController;
-use App\Repository\CategoryRepository;
-
-// Gestion du cas où la taille du POST dépasse la limite PHP
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES)) {
-    $errorPostSize = "Une ou plusieurs images sont trop volumineuses (max 2 Mo par image, 8 Mo total).";
-} else {
-    // Connexion à la base de données via $bdd défini dans db_connect
-   $homeRepository = new HomeRepository($bdd);
-   $categoryRepository = new CategoryRepository($bdd);
-   $controller = new HomeController($homeRepository, $categoryRepository);
-
-    $controller->create();
-}
-?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/manager.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/manager.css">
     <title>Document</title>
 </head>
 <body>
@@ -38,13 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES)) {
     <div class="alert alert-danger"><?= htmlspecialchars($errorPostSize) ?></div>
 <?php endif; ?>
 <form method="post" enctype="multipart/form-data" action="" class="formdiv">
-    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
     <div>
         <label for="title">Titre :</label>
         <input type="text" name="title" id="title" required>
     </div>
     <div>
-        <label for="subitle">Sous titre :</label>
+        <label for="subtitle">Sous titre :</label>
         <input type="text" name="subtitle" id="subtitle" required>
     </div>
     <div>

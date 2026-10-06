@@ -12,22 +12,20 @@ class CategoryController extends BaseController
     private CategoryRepository $categoryRepository;
     private ArticleRepository $articleRepository;
 
-    public function __construct(
-        CategoryRepository $categoryRepository,
-        ArticleRepository $articleRepository
-    ) {
-        $this->categoryRepository = $categoryRepository;
-        $this->articleRepository = $articleRepository;
-    }
+    public function __construct(CategoryRepository $categoryRepository,ArticleRepository $articleRepository) 
+        {
+            $this->categoryRepository = $categoryRepository;
+            $this->articleRepository = $articleRepository;
+        }
 
     public function manager(): void
-    {
-        $categories = $this->categoryRepository->findAll();
+        {
+            $categories = $this->categoryRepository->findAll();
 
-        $this->render('manage/category.php', [
-            'categories' => $categories
-        ]);
-    }
+            $this->render('manage/category.php', [
+                'categories' => $categories
+            ]);
+        }
 
     public function create(array &$errors = []): void
     {
@@ -185,15 +183,13 @@ class CategoryController extends BaseController
         }
 
         if ($search) {
-            $articles = $this->articleRepository
-                ->findArticlesByCategoryAndQuery($categoryId, $search);
+            $articles = $this->articleRepository->findArticlesByCategoryAndQuery($categoryId, $search);
 
             $totalPages = 1;
             $currentPage = 1;
             $pagination = null;
         } else {
-            $pagination = $this->articleRepository
-                ->getPaginatedData($categoryId, $page, $limit);
+            $pagination = $this->articleRepository->getPaginatedData($categoryId, $page, $limit);
 
             $articles = $pagination['articles'];
             $totalPages = $pagination['totalPages'];

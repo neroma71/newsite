@@ -3,7 +3,6 @@
 /** @var \App\Entity\Category[] $categories */
 /** @var array $errors */
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>

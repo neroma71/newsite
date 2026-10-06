@@ -4,7 +4,7 @@ namespace App\Controller;
 use App\Entity\Users;
 use App\Repository\UsersRepository;
 
-class UsersController
+class UsersController extends BaseController
 {
     private UsersRepository $usersRepository;
 
@@ -13,87 +13,90 @@ class UsersController
         $this->usersRepository = $usersRepository;
     }
 
-    public function register(){
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
-
-            $errors = [];
-
-            $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-            $password = isset($_POST['password']) ? trim($_POST['password']) : '';
-
-            if(empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)){
-                $errors[] = 'Un mail valide est requis.';     
-            }
-
-            if(empty($password) || strlen($password) < 8){
-                $errors[] = 'Le mot de passe doit contenir au moins 8 caractères.';
-            }
-
-            // Si des erreurs sont présentes, les afficher dans la vue
-            // If any errors are present, display them in the view
-            if (!empty($errors)) {
-                $_SESSION['errors'] = $errors;
-                // Pas besoin de require db_connect.php ni de global $bdd ici
-                // No need for require db_connect.php or global $bdd here
-                $usersRepository = $this->usersRepository;
-                $usersController = $this;
-                include __DIR__ . '/../../../views/users/login.php';
-                return;
-            }
-
-            $hashedPassword = password_hash($password, PASSWORD_ARGON2I);
-
-            $user = new Users([
-                'email' => $email,
-                'password' => $hashedPassword
-            ]);
-            
-            $this->usersRepository->createUsers($user);
-
-            // Redirection vers la page de login après l'inscription réussie
-            header('Location: /newsite/views/users/login.php');
-            exit;
-        }
-        else{
-            // Si la méthode n'est pas POST, afficher le formulaire d'inscription
-            include __DIR__ . '/../../../views/users/register.php';
-        }
-
+    public function dashboard(): void
+    {
+        $this->render('manage/dashboard.php');
     }
 
-    public function login()
+    public function register(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-            $password = isset($_POST['password']) ? trim($_POST['password']) : '';
-
-            if (empty($email) || empty($password)) {
-                $_SESSION['error_message'] = 'Tous les champs sont obligatoires.';
-                header('Location: /newsite/views/users/login.php');
-                exit;
-            }
-
-            $user = $this->usersRepository->findByEmail($email);
-
-            if ($user && password_verify($password, $user->getPassword())) {
-                //  protection contre fixation de session
-                session_regenerate_id(true); 
-                //  Ne stocke que l'ID de l'utilisateur dans la session pour éviter de stocker des données sensibles
-                $_SESSION['user_id'] = $user->getId(); 
-         
-                header('Location: /newsite/views/manage/dashboard.php');
-                exit;
-            } else {
-                $_SESSION['error'] = 'Identifiants invalides.';
-                header('Location: /newsite/views/users/login.php');
-                exit;
-            }
-        } else {
-            include __DIR__ . '/../../../views/users/login.php';
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $this->render('users/register.php');
             return;
         }
+
+        $this->ensureMethod('POST');
+        $this->ensureCsrf();
+
+        $errors = [];
+
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Un mail valide est requis.';
+        }
+
+        if (empty($password) || strlen($password) < 8) {
+            $errors[] = 'Le mot de passe doit contenir au moins 8 caractères.';
+        }
+
+        if (!empty($errors)) {
+            $this->render('users/register.php', [
+                'errors' => $errors
+            ]);
+            return;
+        }
+
+        $hashedPassword = password_hash($password, PASSWORD_ARGON2I);
+
+        $user = new Users([
+            'email' => $email,
+            'password' => $hashedPassword
+        ]);
+
+        $this->usersRepository->createUsers($user);
+
+        header('Location: ' . BASE_URL . '/users/login');
+        exit;
     }
-  
-  
+
+    public function login(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $this->render('users/login.php');
+            return;
+        }
+
+        $this->ensureMethod('POST');
+        $this->ensureCsrf();
+
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+
+        if (empty($email) || empty($password)) {
+            $this->render('users/login.php', [
+                'error' => 'Tous les champs sont obligatoires.'
+            ]);
+            return;
+        }
+
+        $user = $this->usersRepository->findByEmail($email);
+
+        if ($user && password_verify($password, $user->getPassword())) {
+
+            // Protection contre la fixation de session
+            session_regenerate_id(true);
+
+            // On stocke uniquement l'identifiant de l'utilisateur
+            $_SESSION['user_id'] = $user->getId();
+
+            header('Location: ' . BASE_URL . '/manage/dashboard');
+            exit;
+        }
+
+        $this->render('users/login.php', [
+            'error' => 'Identifiants invalides.'
+        ]);
+    }
 }

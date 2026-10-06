@@ -27,10 +27,13 @@ abstract class BaseController
 
     protected function ensureCsrf(): void
     {
-        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        if (
+            empty($_SESSION['csrf_token']) ||
+            empty($_POST['csrf_token']) ||
+            !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+        ) {
             http_response_code(403);
             exit('CSRF invalid');
         }
-    }
-    
+    } 
 }
