@@ -1,4 +1,3 @@
-```php
 <?php
 /** @var \App\Entity\Home[] $homes */
 ?>
