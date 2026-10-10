@@ -33,12 +33,7 @@ $youtubeService = new YoutubeEmbedService();
 $categoryController = new CategoryController($categoryRepository, $articleRepository);
 $homeController = new HomeController($homeRepository, $categoryRepository);
 $actuController = new ActuController($actuRepository, $homeRepository, $categoryRepository);
-$articleController = new ArticleController(
-    $articleRepository,
-    $imageRepository,
-    $categoryRepository,
-    $youtubeService
-);
+$articleController = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeService);
 $usersController = new UsersController($usersRepository);
 
   //parsing de l'URL
@@ -139,11 +134,6 @@ if ($real && str_starts_with($real, $publicDir) && is_file($real)) {
     if (isset($mimeTypes[$ext])) {
         header('Content-Type: ' . $mimeTypes[$ext]);
         readfile($real);
-        exit;
-    }
-
-    if ($ext === 'php') {
-        require $real;
         exit;
     }
 

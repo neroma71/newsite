@@ -12,10 +12,8 @@ class HomeController extends BaseController
     private HomeRepository $homeRepository;
     private CategoryRepository $categoryRepository;
 
-    public function __construct(
-        HomeRepository $homeRepository,
-        CategoryRepository $categoryRepository
-    ) {
+    public function __construct(HomeRepository $homeRepository, CategoryRepository $categoryRepository) 
+    {
         $this->homeRepository = $homeRepository;
         $this->categoryRepository = $categoryRepository;
     }
@@ -214,7 +212,6 @@ class HomeController extends BaseController
         $this->render('front/index.php', [
             'homes' => $this->homeRepository->findAll(),
             'categories' => $this->categoryRepository->findAll(),
-            'baseUrl' => BASE_URL
         ]);
     }
 }

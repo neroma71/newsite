@@ -30,7 +30,7 @@ class Home
      *
      * @return  self
      */ 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
 
@@ -50,7 +50,7 @@ class Home
      *
      * @return  self
      */ 
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -70,7 +70,7 @@ class Home
      *
      * @return  self
      */ 
-    public function setSubtitle($subtitle)
+    public function setSubtitle(string $subtitle): self
     {
         $this->subtitle = $subtitle;
 
@@ -90,7 +90,7 @@ class Home
      *
      * @return  self
      */ 
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
