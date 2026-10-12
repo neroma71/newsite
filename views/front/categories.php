@@ -94,7 +94,11 @@
             <?php foreach ($articles as $article): ?>
                 <a href="<?= BASE_URL ?>/article.php?id=<?= htmlspecialchars($article->getId());?>">
                 <article class="article">
-                    <div class="rollover"></div>
+                    <div class="rollover">
+                        <svg class="svg2" width="99%" height="95%" xmlns="http://w3.org">
+                            <rect x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)" fill="transparent" stroke="white" stroke-width="1" pathLength="100" class="draw"/>
+                        </svg>
+                    </div>
                         <h2><?= htmlspecialchars($article->getTitle()) ?></h2>
                         <?php 
                         $images = $article->getImages();

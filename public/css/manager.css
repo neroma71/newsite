@@ -37,36 +37,98 @@ header p{
   top:50px;
   transform:translateX(-50%);
 }
-nav{
-  position:fixed;
-  height:40px;
-  width:100vw;
-  top:5px;
-}
-nav ul{
-  list-style-type: none;
-  height:40px;
-  width:100vw;
-  padding:0;
-  margin:0;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:right;
-  padding-right:15px;
-}
-nav ul li{
-  width:155px;
-  text-align:center;
-  line-height:40px;
-  margin-left:5px;
-  border:1px solid lightgray;
-  border-radius:5px;
-}
-nav ul li a{
-  display:inline-block;
-  height:40px;
-  width:155px;
-  text-decoration:none;
+ .rmenu{
+        position:relative;
+        display:block;
+        width:200px;
+        height:100vh;
+        top:-40px;
+        left:100vw;
+        background:rgba(255, 255, 255, 0.3);
+        backdrop-filter : blur(10px);
+        -webkit-backdrop-filter : blur(10px); 
+        z-index:200;
+        border:1px solid lightgray;
+        transition:all 0.3s linear;
+    }
+.navbar_open{
+        position:relative;
+        top:-40px;
+        left:calc(100vw - 230px);
+        width:200px;
+        z-index:250;
+    }
+     .close{
+        position:relative;
+        height:40px;
+        width:40px;
+        right:100px;
+        top:60px;
+        z-index:200;
+        cursor:pointer;
+    }
+     .navbar_open .close{
+        right:40px;
+    }
+    #line1{
+        position:absolute;
+        height:2px;
+        width:40px;
+        top:50%;
+        background:rgb(37, 37, 37);
+        transition:all 0.2s ease-in-out;
+    }
+    #line1::before, #line1::after{
+        content: "";
+        position:absolute;
+        width:40px;
+        height:2px;
+         background:rgb(37, 37, 37);
+        transition:transform 0.3s ease-in-out;
+    }
+    #line1::before{
+        transform:translateY(-10px);
+    }
+    #line1::after{
+        transform:translateY(10px);
+    }
+    .navbar_open #line1{
+       background-color:transparent;
+       border-bottom:2px solid transparent;
+    }
+    .navbar_open #line1::before{
+       transform: translateY(0px) rotateZ(45deg);
+     }
+    .navbar_open #line1::after{
+        transform: translateY(0px) rotateZ(-45deg);
+      }
+    .rmenu ul{
+        display:block;
+        list-style-type:none;
+        margin:0;
+        padding:0;
+     
+    }
+    .rmenu ul li{
+        height:40px;
+        width:200px;
+        text-align:center;
+        border-bottom:1px solid lightgray;
+    }
+    .rmenu ul li a{
+      display:block;
+      text-decoration:none;
+      height:40px;
+      width:200px;
+      line-height:40px;
+    }
+     .rmenu ul li a:hover{
+      display:block;
+      text-decoration:none;
+      height:40px;
+      width:200px;
+      background:rgb(64, 128, 224);
+      color:white;
 }
 .container{
   margin-top:150px;

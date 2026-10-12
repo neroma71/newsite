@@ -62,11 +62,15 @@
                         <?= $video ?>
                     </div>
                 <?php endforeach; ?>
+                 <div class="navigate">
+                    <div class="next"></div>
+                    <div class="prev"></div>
+                </div>
                 <?php foreach ($article->getImages() as $image): ?>
-                    <img src="<?= BASE_URL ?>/public/<?= htmlspecialchars($image->getPath()) ?>" 
-                         alt="<?= htmlspecialchars($image->getImageTitle()) ?>" 
-                         loading="lazy">
+                    <img src="<?= BASE_URL ?>/public/<?= htmlspecialchars($image->getPath()) ?>" alt="<?= htmlspecialchars($image->getImageTitle()) ?>" loading="lazy">
+                        <p><?= htmlspecialchars($image->getImageTitle()) ?></p>
                 <?php endforeach; ?>
+                 <div class="imgname"></div>
             </section>
         </div>
     </div>
@@ -74,5 +78,6 @@
             <p>© 2024 Mon Site d'Articles</p>
         </footer>
         <script src="<?= BASE_URL ?>/public/js/article.js"></script>
+        <script src="<?= BASE_URL ?>/public/js/lightbox.js"></script>
 </body>
 </html>

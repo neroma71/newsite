@@ -54,7 +54,7 @@ class ArticleController extends BaseController
 
             $uploadedImages = [];
 
-            if (
+            if(
                 $images &&
                 isset($images['error']) &&
                 is_array($images['error']) &&
@@ -63,7 +63,7 @@ class ArticleController extends BaseController
                 $uploadedImages = $uploader->uploadMultiple($images, $errors);
             }
 
-            if (!empty($errors)) {
+            if(!empty($errors)) {
                 $categories = $this->categoryRepository->findAll();
 
                 $this->render('manage/createArticle.php', [

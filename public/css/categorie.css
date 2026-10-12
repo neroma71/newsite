@@ -226,6 +226,24 @@ a:hover .rollover{
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
+.svg2{
+    position:absolute;
+    top:2.5%;
+    left:0.5%;
+}
+.draw {
+  stroke-dasharray: 540;
+  stroke-dashoffset: 540;
+  transition: stroke-dashoffset 0.5s linear; 
+}
+svg:hover .draw{
+  animation: draw2 3s linear forwards;
+}
+@keyframes draw2 {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
 .article h2{
     position:absolute;
     left:50px;

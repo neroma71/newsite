@@ -124,9 +124,90 @@ nav .dropdown{
     transition:all 0.3s linear;
 }
 img{
-    max-width: 100%;
-    height: auto;
-    margin-top:10px;
+    width:100%;
+    height:auto;
+    object-fit:cover;
+    transition:all 0.3s linear;
+    cursor:url("../images/loupe.png"), pointer;
+    border:1px solid lightgray;
+    background:white;
+    transition:all 0.3s linear;
+}
+.show{     
+    position:fixed;
+    height:100%;
+    width:100%;
+    top:0;
+    left:0%;
+    background:white;
+    object-fit:contain;
+    cursor: url("../images/close.png"), pointer;
+    z-index:120;
+    transition:all 0.3s linear;
+}
+.navigate{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:0;
+    z-index:10;
+    display:none;
+}
+.shownav{
+    position:fixed;
+    top:50%;
+    left:0;
+    width:100%;
+    height:0;
+    z-index:130;
+    display:block;
+}
+.prev{
+    position:fixed;
+    height:100vh;
+    width:200px;
+    height:100vh;
+    top:0px;
+    left:0;
+    background:url(../images/left2.png)0% center no-repeat;
+    cursor:pointer;
+    z-index:150;
+}
+.next{
+    position:fixed;
+    height:100vh;
+    width:200px;
+    position:fixed;
+    top:0px;
+    background:url(../images/right2.png)100% center no-repeat;
+    left:calc(100vw - 215px);
+    cursor:pointer;
+    z-index:120;
+}
+.imgname{
+    position:absolute;
+    width:100%;
+    height:0;
+    text-align:center;
+    background:white;
+    top:30px;
+    left:0;
+    display:none;
+    z-index:100;
+}
+.imgname2{
+    position:fixed;
+    width:100%;
+    height:50px;
+    text-align:center;
+    line-height:40px;
+    background:rgb(35, 35, 35);
+    color:white;
+    top:94%;
+    left:0;
+    display:block;
+    z-index:150;
 }
 .text p{
     font-weight:200;
@@ -136,9 +217,9 @@ img{
   position: relative;
   padding-bottom: 56.25%; /* ratio 16:9 */
   height: 0;
+  margin-bottom: 25px;
   overflow: hidden;
 }
-
 .video-wrapper iframe {
   position: absolute;
   top: 0;

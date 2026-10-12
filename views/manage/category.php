@@ -13,22 +13,7 @@
 <body>
 <header>
     <p>Gestion des catégories</p>
-    <nav>
-        <ul>
-            <li>
-                <a href="<?= BASE_URL ?>/manage/dashboard">dashboard</a>
-            </li>
-            <li>
-                <a href="<?= BASE_URL ?>/manage/home">Gérer l'accueil</a>
-            </li>
-            <li>
-                <a href="<?= BASE_URL ?>/manage/articles">Gérer les articles</a>
-            </li>
-            <li>
-                <a href="<?= BASE_URL ?>/manage/actus">Gérer les actus</a>
-            </li>
-        </ul>
-    </nav>
+     <?php include __DIR__ . './../../partials/menumanage.php'; ?>
 </header>
 <div class="container">
     <p>
@@ -91,5 +76,5 @@
         </tbody>
     </table>
 </div>
-</body>
+    <script src="<?= BASE_URL ?>/js/manage.js"></script>
 </html>
