@@ -42,11 +42,11 @@
                 <?php foreach ($article->getImages() as $image): ?>
                     <div class="formdiv image-item" data-image-id="<?= $image->getId() ?>">
                         <div class="forminput">
-                            <img src="../../public<?= htmlspecialchars($image->getPath()) ?>" alt="<?= htmlspecialchars($image->getImageTitle()) ?>" id="img-preview-<?= $image->getId() ?>">
+                            <img src="../../public<?= htmlspecialchars($image->getPath()) ?>" alt="<?= htmlspecialchars($image->getNameWithoutExtension()) ?>" id="img-preview-<?= $image->getId() ?>">
                         </div>
                             <p><label for="image_title_<?= $image->getId() ?>">Changer le nom de l'image :</label></p>
                         <div class="forminput">
-                            <input type="text" name="image_titles[<?= $image->getId() ?>]" id="image_title_<?= $image->getId() ?>" value="<?= htmlspecialchars($image->getImageTitle()) ?>">
+                            <input type="text" name="image_titles[<?= $image->getId() ?>]" id="image_title_<?= $image->getId() ?>" value="<?= htmlspecialchars($image->getNameWithoutExtension()) ?>">
                         </div>
                         <p><label for="image_file_<?= $image->getId() ?>">Remplacer l'image :</label></p>
                         <div class="forminput">

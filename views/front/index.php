@@ -45,7 +45,7 @@
     <section id="description">
         <h2 class="description-title slidingTitle">À propos</h2>
         <div class="description"><?= $home->getDescription(); ?></div>
-        <div class="line slidingTitle"></div>
+        <div class="slidingLine slidingTitle"></div>
     </section>
 
     <section id="categories">
@@ -57,8 +57,8 @@
                     <div class="category" style="background:url('<?= BASE_URL ?>/uploads/<?= htmlspecialchars($category->getImage()) ?>') no-repeat; background-size:cover;">
                         <div class="overlay">
                         <svg class="svg2" width="95%" height="95%" xmlns="http://w3.org">
-              <rect x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)" fill="transparent" stroke="white" stroke-width="1" pathLength="100" class="draw"/>
-                </svg>
+                            <rect x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)" fill="transparent" stroke="white" stroke-width="1" pathLength="100" class="draw"/>
+                        </svg>
                             <h3><?= htmlspecialchars($category->getTitle()) ?></h3>
                             <p><?= htmlspecialchars($category->getDescription()) ?></p>
                         </div>
@@ -85,11 +85,12 @@
         </div>
         <div id="contact-illustration" style="background:url(<?= BASE_URL ?>/uploads/<?= htmlspecialchars($home->getImage4()) ?>) no-repeat; background-attachment:fixed; background-size:cover;"></div>
     </section>
-
-    <footer></footer>
+    <footer>
+        <p>© 2026 - Tous droits réservés</p>
+        <p><a href="<?= BASE_URL ?>/mentions-legales.php">Mentions légales</a></p>
+    </footer>
 <?php endforeach; ?>
 </main>
-
 <script src="<?= BASE_URL ?>/js/home.js"></script>
 </body>
 </html>

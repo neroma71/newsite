@@ -53,7 +53,7 @@ function smoothScrollTo(targetY, duration = 1000) {
 }
 // fin de smooth scroll
 
-// Animation de l'image au scroll
+// Animation de l'image au scroll effet de dézoom
 image.style.transform = 'scale(1.7)'; 
 function updateImageScale() {
     const scrollY = window.scrollY;
@@ -63,11 +63,11 @@ function updateImageScale() {
 window.addEventListener('scroll', updateImageScale);
 window.addEventListener('resize', updateImageScale);
 updateImageScale();
-
+// animation parallaxe de la 2e image
 window.addEventListener('scroll', ()=>{
       catHeader.style.backgroundPositionY = -window.scrollY / 3 + "px";
     });
-
+// Animation des titres qui apparaissent au scroll
 const observer = new IntersectionObserver((entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {

@@ -1,6 +1,6 @@
  <nav id="rmenu" class="rmenu">
     <div class="close">
-		<div class="line" id="line1"></div>
+		<div class="line1" id="line1"></div>
 	</div>
             <ul>
                 <li><a href="#accueil">Accueil</a></li>

@@ -67,8 +67,8 @@
                     <div class="prev"></div>
                 </div>
                 <?php foreach ($article->getImages() as $image): ?>
-                    <img src="<?= BASE_URL ?>/public/<?= htmlspecialchars($image->getPath()) ?>" alt="<?= htmlspecialchars($image->getImageTitle()) ?>" loading="lazy">
-                        <p><?= htmlspecialchars($image->getImageTitle()) ?></p>
+                    <img src="<?= BASE_URL ?>/public/<?= htmlspecialchars($image->getPath()) ?>" alt="<?= htmlspecialchars($image->getNameWithoutExtension()) ?>" loading="lazy">
+                        <p><?= htmlspecialchars($image->getNameWithoutExtension()) ?></p>
                 <?php endforeach; ?>
                  <div class="imgname"></div>
             </section>

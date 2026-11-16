@@ -19,7 +19,7 @@ use App\Repository\ActuRepository;
 use App\Repository\UsersRepository;
 use App\Service\YoutubeEmbedService;
 
-//dépendances des controllers, repositories et services
+//dépendances des contrôlers, repositories et services
 
 $homeRepository = new HomeRepository($bdd);
 $categoryRepository = new CategoryRepository($bdd);
@@ -30,7 +30,7 @@ $usersRepository = new UsersRepository($bdd);
 
 $youtubeService = new YoutubeEmbedService();
 
-$categoryController = new CategoryController($categoryRepository, $articleRepository);
+$categoryController = new CategoryController($categoryRepository, $articleRepository, $homeRepository);
 $homeController = new HomeController($homeRepository, $categoryRepository);
 $actuController = new ActuController($actuRepository, $homeRepository, $categoryRepository);
 $articleController = new ArticleController($articleRepository, $imageRepository, $categoryRepository, $youtubeService);
@@ -51,7 +51,8 @@ if ($path === '') {
     $path = '/';
 }
   
-if (str_starts_with($path, '/manage') && empty($_SESSION['user_id'])) {
+$isManageRoute = ($path === '/manage' || str_starts_with($path, '/manage/'));
+if ($isManageRoute && empty($_SESSION['user_id'])) {
     header('Location: ' . BASE_URL . '/users/login');
     exit;
 }

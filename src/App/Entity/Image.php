@@ -48,6 +48,13 @@ class Image {
     {
         $this->articleId = $articleId;
     }
+
+    public function getNameWithoutExtension(): ?string
+    {
+    return $this->imageTitle
+        ? pathinfo($this->imageTitle, PATHINFO_FILENAME)
+        : null;
+    }
 }
 
 

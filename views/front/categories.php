@@ -2,13 +2,14 @@
 /** @var \App\Entity\Category $categorie */
 /** @var \App\Entity\Category[] $categories */
 /** @var \App\Entity\Articles[] $articles */
+/** @var \App\Entity\Home|null $home */
 /** @var int $currentPage */
 /** @var int $totalPages */
 /** @var int $categoryId */
 /** @var string $search */
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +29,9 @@
     <header>
         <a href="<?= BASE_URL ?>">
         <div id="logo">
-             <!-- image du logo -->
+            <?php if (!empty($homes) && $homes[0]->getImage1()): ?>
+                <img src="<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($homes[0]->getImage1()) ?>">
+            <?php endif; ?>  
         </div>
         </a>
         <nav>

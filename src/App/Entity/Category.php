@@ -27,7 +27,7 @@ class Category{
      *
      * @return  self
      */ 
-    public function setId($id)
+    public function setId(int $id): ?self
     {
         $this->id = $id;
 
@@ -47,7 +47,7 @@ class Category{
      *
      * @return  self
      */ 
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         $this->title = $title;
 
@@ -67,7 +67,7 @@ class Category{
      *
      * @return  self
      */ 
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
 
@@ -87,7 +87,7 @@ class Category{
      *
      * @return  self
      */ 
-    public function setImage($image)
+    public function setImage(string $image)
     {
         $this->image = $image;
 

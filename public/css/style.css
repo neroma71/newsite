@@ -231,7 +231,7 @@ h1{
     margin:10px 0;
     color:#3d3c3d;
 } 
-.line{
+.slidingLine{
     position:relative;
     top:-170px;
     left:0;
@@ -241,7 +241,7 @@ h1{
     background:#3d3c3d;
     transition: left 1s ease, opacity 1s ease-in-out;
 }
-.line.active {
+.slidingLine.active {
     left: 25vw;
     opacity: 1;
 }
@@ -427,6 +427,17 @@ footer{
     margin-top:50px;
     background-color:#1d1c1d;
 }
+footer p{
+    width:100%;
+    text-align:center;
+    font-weight:100;
+    font-family: "Roboto", sans-serif;
+    color:white;
+}
+footer a{
+    text-decoration:none;
+    color:white;
+}
 @media screen and (max-width: 768px) {
     #title h1{
         top:50px;
@@ -456,7 +467,7 @@ footer{
         top:-40px;
         left:calc(100vw - 230px);
         width:200px;
-        z-index:250;
+        z-index:350;
     }
      .close{
         position:relative;
@@ -483,7 +494,7 @@ footer{
         position:absolute;
         width:40px;
         height:2px;
-         background:rgb(37, 37, 37);
+        background:rgb(37, 37, 37);
         transition:transform 0.3s ease-in-out;
     }
     #line1::before{
@@ -507,7 +518,6 @@ footer{
         list-style-type:none;
         margin:0;
         padding:0;
-     
     }
     .rmenu ul li{
         height:40px;

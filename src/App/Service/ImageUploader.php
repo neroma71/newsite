@@ -52,7 +52,7 @@ class ImageUploader
     return $uniqueName;
     }
 
-    // Methode pour upload les images de la page home et les image de categorie
+    // Methode pour upload des images de la page home et les image de categorie
     public function upload(?array $file, ?string $currentImage = null, array &$errors = []): string
     {
         if (

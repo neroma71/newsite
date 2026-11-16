@@ -96,7 +96,7 @@ namespace App\Entity;
          *
          * @return  self
          */ 
-        public function setImages($images)
+        public function setImages(array $images): self
         {
                 $this->images = $images;
 

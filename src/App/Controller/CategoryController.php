@@ -5,16 +5,19 @@ use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use App\Service\ImageUploader;
 use App\Repository\ArticleRepository;
+use App\Repository\HomeRepository;
 
 class CategoryController extends BaseController
 {
     private CategoryRepository $categoryRepository;
     private ArticleRepository $articleRepository;
+    private HomeRepository $homeRepository;
 
-    public function __construct(CategoryRepository $categoryRepository,ArticleRepository $articleRepository) 
+    public function __construct(CategoryRepository $categoryRepository,ArticleRepository $articleRepository, HomeRepository $homeRepository) 
         {
             $this->categoryRepository = $categoryRepository;
             $this->articleRepository = $articleRepository;
+            $this->homeRepository = $homeRepository;
         }
 
     public function manager(): void
@@ -170,6 +173,8 @@ class CategoryController extends BaseController
         $categoryId = (int) ($_GET['id'] ?? 0);
         $page = (int) ($_GET['page'] ?? 1);
         $search = $_GET['search'] ?? '';
+        
+        $homes = $this->homeRepository->findAll();
 
         $categories = $this->categoryRepository->findAll();
         $limit = 5;
@@ -204,6 +209,7 @@ class CategoryController extends BaseController
             'search'      => $search,
             'pagination'  => $pagination,
             'categoryId'  => $categoryId,
+            'homes'         => $homes,
         ]);
     }
 }

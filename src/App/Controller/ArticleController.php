@@ -237,7 +237,7 @@ class ArticleController extends BaseController
                 $uploadDir = __DIR__ . '/../../../public/uploads/';
 
                 // Suppression des images physiques + BDD
-                foreach ($article->getImages() as $image) {
+                foreach($article->getImages() as $image){
 
                     $filePath = $uploadDir . basename($image->getPath());
 
