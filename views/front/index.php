@@ -87,7 +87,7 @@
     </section>
     <footer>
         <p>© 2026 - Tous droits réservés</p>
-        <p><a href="<?= BASE_URL ?>/mentions-legales.php">Mentions légales</a></p>
+        <p><a href="<?= BASE_URL ?>/mentions">Mentions légales</a></p>
     </footer>
 <?php endforeach; ?>
 </main>

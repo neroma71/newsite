@@ -65,6 +65,7 @@ $routes = [
     '/categories.php' => fn() => $categoryController->show(),
     '/article.php' => fn() => $articleController->show(),
     '/actu.php' => fn() => $actuController->show(),
+    '/mentions' => fn() => require __DIR__ . '/views/front/mentions.php',
 
     //back office
     // actus management

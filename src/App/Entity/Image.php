@@ -51,9 +51,7 @@ class Image {
 
     public function getNameWithoutExtension(): ?string
     {
-    return $this->imageTitle
-        ? pathinfo($this->imageTitle, PATHINFO_FILENAME)
-        : null;
+    return $this->imageTitle ? pathinfo($this->imageTitle, PATHINFO_FILENAME) : null;
     }
 }
 
